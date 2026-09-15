@@ -7,6 +7,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.0.2] - 2026-09-15
+
 ### Fixed
 
 - The demo APK attached to a release now reports the library version it was built from.
@@ -61,5 +63,6 @@ Initial public release.
 - No `iosX64` target — Intel Mac simulators are not covered
 - No token refresh, certificate pinning helpers, or callback-style `on` / `emit` API
 
-[Unreleased]: https://github.com/adventures92/Sockit/compare/v0.0.1...HEAD
+[Unreleased]: https://github.com/adventures92/Sockit/compare/v0.0.2...HEAD
+[0.0.2]: https://github.com/adventures92/Sockit/releases/tag/v0.0.2
 [0.0.1]: https://github.com/adventures92/Sockit/releases/tag/v0.0.1
