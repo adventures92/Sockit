@@ -34,14 +34,14 @@ jobs:
   build:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v7
 
-      - uses: actions/setup-java@v4
+      - uses: actions/setup-java@v6
         with:
           distribution: temurin
           java-version: 21
 
-      - uses: gradle/actions/setup-gradle@v4
+      - uses: gradle/actions/setup-gradle@v5
 
       # The narrative guide is the site root; the generated reference is nested under /api/.
       # Neither replaces the other — the guide teaches, the reference is exhaustive.
@@ -67,7 +67,7 @@ jobs:
           echo "guide pages: $(find site -maxdepth 1 -name '*.html' | wc -l)"
           echo "api pages:   $(find site/api -name '*.html' | wc -l)"
 
-      - uses: actions/upload-pages-artifact@v3
+      - uses: actions/upload-pages-artifact@v5
         with:
           path: site
 
@@ -79,4 +79,4 @@ jobs:
       url: ${{ steps.deploy.outputs.page_url }}
     steps:
       - id: deploy
-        uses: actions/deploy-pages@v4
+        uses: actions/deploy-pages@v5

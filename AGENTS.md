@@ -227,6 +227,16 @@ cleanly for consumers who are not authenticated against GitHub.
 All jobs use `gradle/actions/setup-gradle` (dependency caching + wrapper checksum validation) on
 JDK 21, matching the toolchain pinned in `gradle/gradle-daemon-jvm.properties`.
 
+> **`gradle/actions` is held at v5 deliberately.** v6 extracts caching into `gradle-actions-caching`,
+> a proprietary component that is not MIT-licensed and whose use requires accepting
+> <https://gradle.com/legal/terms-of-use/>. For an Apache-2.0 project that is a licensing decision,
+> not a version bump. v5 already runs on Node 24, so it carries no deprecation debt. Dependabot is
+> configured not to propose the major — revisit deliberately or not at all.
+
+Every other action tracks its latest major. GitHub deprecated the Node 20 runtime
+([changelog](https://github.blog/changelog/2025-09-19-deprecation-of-node-20-on-github-actions-runners/)),
+so actions targeting it are force-run on Node 24 and warn on every job.
+
 The two scan steps use `grep -rEn`, not `rg` — ripgrep is not guaranteed on GitHub runners, and a
 missing binary would make both scans pass vacuously.
 
