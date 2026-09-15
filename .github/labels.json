@@ -1,0 +1,80 @@
+[
+  {
+    "name": "bug",
+    "color": "d73a4a",
+    "description": "Behaviour differs from what the documentation states"
+  },
+  {
+    "name": "enhancement",
+    "color": "0075ca",
+    "description": "New capability or an improvement to an existing one"
+  },
+  {
+    "name": "documentation",
+    "color": "0075ca",
+    "description": "README, KDoc, or docs/"
+  },
+  {
+    "name": "build",
+    "color": "5319e7",
+    "description": "Gradle, CI, publishing, or release tooling"
+  },
+  {
+    "name": "area: protocol",
+    "color": "1d76db",
+    "description": "Engine.IO / Socket.IO codec, binary assembly, conformance vectors"
+  },
+  {
+    "name": "area: transport",
+    "color": "1d76db",
+    "description": "Polling, WebSocket, upgrade sequencing, HTTP client"
+  },
+  {
+    "name": "area: public-api",
+    "color": "b60205",
+    "description": "Touches dev.adven.sockit.api — a compatibility commitment"
+  },
+  {
+    "name": "area: android",
+    "color": "1d76db"
+  },
+  {
+    "name": "area: ios",
+    "color": "1d76db"
+  },
+  {
+    "name": "needs-triage",
+    "color": "ededed",
+    "description": "Not yet reviewed by a maintainer"
+  },
+  {
+    "name": "needs-reproduction",
+    "color": "ededed",
+    "description": "Waiting on a minimal reproduction from the reporter"
+  },
+  {
+    "name": "blocked",
+    "color": "ededed",
+    "description": "Waiting on something outside this repository"
+  },
+  {
+    "name": "wontfix",
+    "color": "ffffff",
+    "description": "Deliberately out of scope — see the Limitations table"
+  },
+  {
+    "name": "good first issue",
+    "color": "7057ff",
+    "description": "Self-contained, with the approach already described"
+  },
+  {
+    "name": "help wanted",
+    "color": "008672",
+    "description": "Maintainer would welcome a pull request"
+  },
+  {
+    "name": "breaking",
+    "color": "b60205",
+    "description": "Requires a major/minor bump and a migration note"
+  }
+]

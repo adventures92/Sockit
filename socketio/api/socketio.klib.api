@@ -1,0 +1,455 @@
+// Klib ABI Dump
+// Targets: [iosArm64, iosSimulatorArm64]
+// Rendering settings:
+// - Signature version: 2
+// - Show manifest properties: true
+// - Show declarations: true
+
+// Library unique name: <Sockit:socketio>
+final enum class dev.adven.sockit.api/EventBufferOverflow : kotlin/Enum<dev.adven.sockit.api/EventBufferOverflow> { // dev.adven.sockit.api/EventBufferOverflow|null[0]
+    enum entry DROP_LATEST // dev.adven.sockit.api/EventBufferOverflow.DROP_LATEST|null[0]
+    enum entry DROP_OLDEST // dev.adven.sockit.api/EventBufferOverflow.DROP_OLDEST|null[0]
+    enum entry SUSPEND // dev.adven.sockit.api/EventBufferOverflow.SUSPEND|null[0]
+
+    final val entries // dev.adven.sockit.api/EventBufferOverflow.entries|#static{}entries[0]
+        final fun <get-entries>(): kotlin.enums/EnumEntries<dev.adven.sockit.api/EventBufferOverflow> // dev.adven.sockit.api/EventBufferOverflow.entries.<get-entries>|<get-entries>#static(){}[0]
+
+    final fun valueOf(kotlin/String): dev.adven.sockit.api/EventBufferOverflow // dev.adven.sockit.api/EventBufferOverflow.valueOf|valueOf#static(kotlin.String){}[0]
+    final fun values(): kotlin/Array<dev.adven.sockit.api/EventBufferOverflow> // dev.adven.sockit.api/EventBufferOverflow.values|values#static(){}[0]
+}
+
+abstract fun interface dev.adven.sockit.api/Ack { // dev.adven.sockit.api/Ack|null[0]
+    abstract fun send(kotlin/Array<out kotlin/Any?>...) // dev.adven.sockit.api/Ack.send|send(kotlin.Array<out|kotlin.Any?>...){}[0]
+}
+
+abstract interface dev.adven.sockit.api/Logger { // dev.adven.sockit.api/Logger|null[0]
+    abstract fun debug(kotlin/String, kotlin/String) // dev.adven.sockit.api/Logger.debug|debug(kotlin.String;kotlin.String){}[0]
+    abstract fun error(kotlin/String, kotlin/String, kotlin/Throwable? = ...) // dev.adven.sockit.api/Logger.error|error(kotlin.String;kotlin.String;kotlin.Throwable?){}[0]
+    abstract fun info(kotlin/String, kotlin/String) // dev.adven.sockit.api/Logger.info|info(kotlin.String;kotlin.String){}[0]
+
+    final object NoOp : dev.adven.sockit.api/Logger { // dev.adven.sockit.api/Logger.NoOp|null[0]
+        final const val TAG // dev.adven.sockit.api/Logger.NoOp.TAG|{}TAG[0]
+            final fun <get-TAG>(): kotlin/String // dev.adven.sockit.api/Logger.NoOp.TAG.<get-TAG>|<get-TAG>(){}[0]
+
+        final fun debug(kotlin/String, kotlin/String) // dev.adven.sockit.api/Logger.NoOp.debug|debug(kotlin.String;kotlin.String){}[0]
+        final fun error(kotlin/String, kotlin/String, kotlin/Throwable?) // dev.adven.sockit.api/Logger.NoOp.error|error(kotlin.String;kotlin.String;kotlin.Throwable?){}[0]
+        final fun essential(kotlin/Function4<kotlin/String, kotlin/String, kotlin/String, kotlin/Throwable?, kotlin/Unit>): dev.adven.sockit.api/Logger // dev.adven.sockit.api/Logger.NoOp.essential|essential(kotlin.Function4<kotlin.String,kotlin.String,kotlin.String,kotlin.Throwable?,kotlin.Unit>){}[0]
+        final fun info(kotlin/String, kotlin/String) // dev.adven.sockit.api/Logger.NoOp.info|info(kotlin.String;kotlin.String){}[0]
+    }
+}
+
+abstract interface dev.adven.sockit.api/NamespaceSocket { // dev.adven.sockit.api/NamespaceSocket|null[0]
+    abstract val connectionState // dev.adven.sockit.api/NamespaceSocket.connectionState|{}connectionState[0]
+        abstract fun <get-connectionState>(): kotlinx.coroutines.flow/StateFlow<dev.adven.sockit.api/ConnectionState> // dev.adven.sockit.api/NamespaceSocket.connectionState.<get-connectionState>|<get-connectionState>(){}[0]
+    abstract val errors // dev.adven.sockit.api/NamespaceSocket.errors|{}errors[0]
+        abstract fun <get-errors>(): kotlinx.coroutines.flow/Flow<dev.adven.sockit.api/SocketError> // dev.adven.sockit.api/NamespaceSocket.errors.<get-errors>|<get-errors>(){}[0]
+    abstract val id // dev.adven.sockit.api/NamespaceSocket.id|{}id[0]
+        abstract fun <get-id>(): kotlinx.coroutines.flow/StateFlow<kotlin/String?> // dev.adven.sockit.api/NamespaceSocket.id.<get-id>|<get-id>(){}[0]
+
+    abstract fun close() // dev.adven.sockit.api/NamespaceSocket.close|close(){}[0]
+    abstract fun emit(dev.adven.sockit.api/StreamCommand) // dev.adven.sockit.api/NamespaceSocket.emit|emit(dev.adven.sockit.api.StreamCommand){}[0]
+    abstract fun emit(kotlin/String, kotlin/Array<out kotlin/Any?>...) // dev.adven.sockit.api/NamespaceSocket.emit|emit(kotlin.String;kotlin.Array<out|kotlin.Any?>...){}[0]
+    abstract fun emitWithAck(kotlin/String, kotlin/Array<out kotlin/Any?>...): kotlinx.coroutines.flow/Flow<dev.adven.sockit.api/SocketEvent> // dev.adven.sockit.api/NamespaceSocket.emitWithAck|emitWithAck(kotlin.String;kotlin.Array<out|kotlin.Any?>...){}[0]
+    abstract fun events(kotlin/String): kotlinx.coroutines.flow/Flow<dev.adven.sockit.api/SocketEvent> // dev.adven.sockit.api/NamespaceSocket.events|events(kotlin.String){}[0]
+    abstract fun isConnected(): kotlin/Boolean // dev.adven.sockit.api/NamespaceSocket.isConnected|isConnected(){}[0]
+    abstract fun isDisconnected(): kotlin/Boolean // dev.adven.sockit.api/NamespaceSocket.isDisconnected|isDisconnected(){}[0]
+    abstract fun open() // dev.adven.sockit.api/NamespaceSocket.open|open(){}[0]
+    abstract suspend fun emitAwait(dev.adven.sockit.api/StreamCommand) // dev.adven.sockit.api/NamespaceSocket.emitAwait|emitAwait(dev.adven.sockit.api.StreamCommand){}[0]
+    abstract suspend fun emitAwait(kotlin/String, kotlin/Array<out kotlin/Any?>...) // dev.adven.sockit.api/NamespaceSocket.emitAwait|emitAwait(kotlin.String;kotlin.Array<out|kotlin.Any?>...){}[0]
+    abstract suspend fun openAwait() // dev.adven.sockit.api/NamespaceSocket.openAwait|openAwait(){}[0]
+}
+
+abstract interface dev.adven.sockit.api/StreamCommand { // dev.adven.sockit.api/StreamCommand|null[0]
+    abstract val eventName // dev.adven.sockit.api/StreamCommand.eventName|{}eventName[0]
+        abstract fun <get-eventName>(): kotlin/String // dev.adven.sockit.api/StreamCommand.eventName.<get-eventName>|<get-eventName>(){}[0]
+    abstract val payload // dev.adven.sockit.api/StreamCommand.payload|{}payload[0]
+        abstract fun <get-payload>(): kotlinx.serialization.json/JsonElement // dev.adven.sockit.api/StreamCommand.payload.<get-payload>|<get-payload>(){}[0]
+}
+
+sealed interface dev.adven.sockit.api/ConnectionState { // dev.adven.sockit.api/ConnectionState|null[0]
+    final class Failed : dev.adven.sockit.api/ConnectionState { // dev.adven.sockit.api/ConnectionState.Failed|null[0]
+        constructor <init>(dev.adven.sockit.api/SocketError) // dev.adven.sockit.api/ConnectionState.Failed.<init>|<init>(dev.adven.sockit.api.SocketError){}[0]
+
+        final val error // dev.adven.sockit.api/ConnectionState.Failed.error|{}error[0]
+            final fun <get-error>(): dev.adven.sockit.api/SocketError // dev.adven.sockit.api/ConnectionState.Failed.error.<get-error>|<get-error>(){}[0]
+
+        final fun component1(): dev.adven.sockit.api/SocketError // dev.adven.sockit.api/ConnectionState.Failed.component1|component1(){}[0]
+        final fun copy(dev.adven.sockit.api/SocketError = ...): dev.adven.sockit.api/ConnectionState.Failed // dev.adven.sockit.api/ConnectionState.Failed.copy|copy(dev.adven.sockit.api.SocketError){}[0]
+        final fun equals(kotlin/Any?): kotlin/Boolean // dev.adven.sockit.api/ConnectionState.Failed.equals|equals(kotlin.Any?){}[0]
+        final fun hashCode(): kotlin/Int // dev.adven.sockit.api/ConnectionState.Failed.hashCode|hashCode(){}[0]
+        final fun toString(): kotlin/String // dev.adven.sockit.api/ConnectionState.Failed.toString|toString(){}[0]
+    }
+
+    final class Reconnecting : dev.adven.sockit.api/ConnectionState { // dev.adven.sockit.api/ConnectionState.Reconnecting|null[0]
+        constructor <init>(kotlin/Int) // dev.adven.sockit.api/ConnectionState.Reconnecting.<init>|<init>(kotlin.Int){}[0]
+
+        final val attempt // dev.adven.sockit.api/ConnectionState.Reconnecting.attempt|{}attempt[0]
+            final fun <get-attempt>(): kotlin/Int // dev.adven.sockit.api/ConnectionState.Reconnecting.attempt.<get-attempt>|<get-attempt>(){}[0]
+
+        final fun component1(): kotlin/Int // dev.adven.sockit.api/ConnectionState.Reconnecting.component1|component1(){}[0]
+        final fun copy(kotlin/Int = ...): dev.adven.sockit.api/ConnectionState.Reconnecting // dev.adven.sockit.api/ConnectionState.Reconnecting.copy|copy(kotlin.Int){}[0]
+        final fun equals(kotlin/Any?): kotlin/Boolean // dev.adven.sockit.api/ConnectionState.Reconnecting.equals|equals(kotlin.Any?){}[0]
+        final fun hashCode(): kotlin/Int // dev.adven.sockit.api/ConnectionState.Reconnecting.hashCode|hashCode(){}[0]
+        final fun toString(): kotlin/String // dev.adven.sockit.api/ConnectionState.Reconnecting.toString|toString(){}[0]
+    }
+
+    final object Connected : dev.adven.sockit.api/ConnectionState { // dev.adven.sockit.api/ConnectionState.Connected|null[0]
+        final fun equals(kotlin/Any?): kotlin/Boolean // dev.adven.sockit.api/ConnectionState.Connected.equals|equals(kotlin.Any?){}[0]
+        final fun hashCode(): kotlin/Int // dev.adven.sockit.api/ConnectionState.Connected.hashCode|hashCode(){}[0]
+        final fun toString(): kotlin/String // dev.adven.sockit.api/ConnectionState.Connected.toString|toString(){}[0]
+    }
+
+    final object Connecting : dev.adven.sockit.api/ConnectionState { // dev.adven.sockit.api/ConnectionState.Connecting|null[0]
+        final fun equals(kotlin/Any?): kotlin/Boolean // dev.adven.sockit.api/ConnectionState.Connecting.equals|equals(kotlin.Any?){}[0]
+        final fun hashCode(): kotlin/Int // dev.adven.sockit.api/ConnectionState.Connecting.hashCode|hashCode(){}[0]
+        final fun toString(): kotlin/String // dev.adven.sockit.api/ConnectionState.Connecting.toString|toString(){}[0]
+    }
+
+    final object Disconnected : dev.adven.sockit.api/ConnectionState { // dev.adven.sockit.api/ConnectionState.Disconnected|null[0]
+        final fun equals(kotlin/Any?): kotlin/Boolean // dev.adven.sockit.api/ConnectionState.Disconnected.equals|equals(kotlin.Any?){}[0]
+        final fun hashCode(): kotlin/Int // dev.adven.sockit.api/ConnectionState.Disconnected.hashCode|hashCode(){}[0]
+        final fun toString(): kotlin/String // dev.adven.sockit.api/ConnectionState.Disconnected.toString|toString(){}[0]
+    }
+}
+
+sealed interface dev.adven.sockit.api/SocketError { // dev.adven.sockit.api/SocketError|null[0]
+    final class ConnectError : dev.adven.sockit.api/SocketError { // dev.adven.sockit.api/SocketError.ConnectError|null[0]
+        constructor <init>(kotlin/String, kotlin/String? = ...) // dev.adven.sockit.api/SocketError.ConnectError.<init>|<init>(kotlin.String;kotlin.String?){}[0]
+
+        final val data // dev.adven.sockit.api/SocketError.ConnectError.data|{}data[0]
+            final fun <get-data>(): kotlin/String? // dev.adven.sockit.api/SocketError.ConnectError.data.<get-data>|<get-data>(){}[0]
+        final val message // dev.adven.sockit.api/SocketError.ConnectError.message|{}message[0]
+            final fun <get-message>(): kotlin/String // dev.adven.sockit.api/SocketError.ConnectError.message.<get-message>|<get-message>(){}[0]
+
+        final fun component1(): kotlin/String // dev.adven.sockit.api/SocketError.ConnectError.component1|component1(){}[0]
+        final fun component2(): kotlin/String? // dev.adven.sockit.api/SocketError.ConnectError.component2|component2(){}[0]
+        final fun copy(kotlin/String = ..., kotlin/String? = ...): dev.adven.sockit.api/SocketError.ConnectError // dev.adven.sockit.api/SocketError.ConnectError.copy|copy(kotlin.String;kotlin.String?){}[0]
+        final fun equals(kotlin/Any?): kotlin/Boolean // dev.adven.sockit.api/SocketError.ConnectError.equals|equals(kotlin.Any?){}[0]
+        final fun hashCode(): kotlin/Int // dev.adven.sockit.api/SocketError.ConnectError.hashCode|hashCode(){}[0]
+        final fun toString(): kotlin/String // dev.adven.sockit.api/SocketError.ConnectError.toString|toString(){}[0]
+    }
+
+    final class ParseError : dev.adven.sockit.api/SocketError { // dev.adven.sockit.api/SocketError.ParseError|null[0]
+        constructor <init>(kotlin/String) // dev.adven.sockit.api/SocketError.ParseError.<init>|<init>(kotlin.String){}[0]
+
+        final val raw // dev.adven.sockit.api/SocketError.ParseError.raw|{}raw[0]
+            final fun <get-raw>(): kotlin/String // dev.adven.sockit.api/SocketError.ParseError.raw.<get-raw>|<get-raw>(){}[0]
+
+        final fun component1(): kotlin/String // dev.adven.sockit.api/SocketError.ParseError.component1|component1(){}[0]
+        final fun copy(kotlin/String = ...): dev.adven.sockit.api/SocketError.ParseError // dev.adven.sockit.api/SocketError.ParseError.copy|copy(kotlin.String){}[0]
+        final fun equals(kotlin/Any?): kotlin/Boolean // dev.adven.sockit.api/SocketError.ParseError.equals|equals(kotlin.Any?){}[0]
+        final fun hashCode(): kotlin/Int // dev.adven.sockit.api/SocketError.ParseError.hashCode|hashCode(){}[0]
+        final fun toString(): kotlin/String // dev.adven.sockit.api/SocketError.ParseError.toString|toString(){}[0]
+    }
+
+    final class SendFailed : dev.adven.sockit.api/SocketError { // dev.adven.sockit.api/SocketError.SendFailed|null[0]
+        constructor <init>(kotlin/Throwable?) // dev.adven.sockit.api/SocketError.SendFailed.<init>|<init>(kotlin.Throwable?){}[0]
+
+        final val cause // dev.adven.sockit.api/SocketError.SendFailed.cause|{}cause[0]
+            final fun <get-cause>(): kotlin/Throwable? // dev.adven.sockit.api/SocketError.SendFailed.cause.<get-cause>|<get-cause>(){}[0]
+
+        final fun component1(): kotlin/Throwable? // dev.adven.sockit.api/SocketError.SendFailed.component1|component1(){}[0]
+        final fun copy(kotlin/Throwable? = ...): dev.adven.sockit.api/SocketError.SendFailed // dev.adven.sockit.api/SocketError.SendFailed.copy|copy(kotlin.Throwable?){}[0]
+        final fun equals(kotlin/Any?): kotlin/Boolean // dev.adven.sockit.api/SocketError.SendFailed.equals|equals(kotlin.Any?){}[0]
+        final fun hashCode(): kotlin/Int // dev.adven.sockit.api/SocketError.SendFailed.hashCode|hashCode(){}[0]
+        final fun toString(): kotlin/String // dev.adven.sockit.api/SocketError.SendFailed.toString|toString(){}[0]
+    }
+
+    final class Timeout : dev.adven.sockit.api/SocketError { // dev.adven.sockit.api/SocketError.Timeout|null[0]
+        constructor <init>(kotlin/String) // dev.adven.sockit.api/SocketError.Timeout.<init>|<init>(kotlin.String){}[0]
+
+        final val phase // dev.adven.sockit.api/SocketError.Timeout.phase|{}phase[0]
+            final fun <get-phase>(): kotlin/String // dev.adven.sockit.api/SocketError.Timeout.phase.<get-phase>|<get-phase>(){}[0]
+
+        final fun component1(): kotlin/String // dev.adven.sockit.api/SocketError.Timeout.component1|component1(){}[0]
+        final fun copy(kotlin/String = ...): dev.adven.sockit.api/SocketError.Timeout // dev.adven.sockit.api/SocketError.Timeout.copy|copy(kotlin.String){}[0]
+        final fun equals(kotlin/Any?): kotlin/Boolean // dev.adven.sockit.api/SocketError.Timeout.equals|equals(kotlin.Any?){}[0]
+        final fun hashCode(): kotlin/Int // dev.adven.sockit.api/SocketError.Timeout.hashCode|hashCode(){}[0]
+        final fun toString(): kotlin/String // dev.adven.sockit.api/SocketError.Timeout.toString|toString(){}[0]
+    }
+
+    final class TlsFailure : dev.adven.sockit.api/SocketError { // dev.adven.sockit.api/SocketError.TlsFailure|null[0]
+        constructor <init>(kotlin/Throwable?) // dev.adven.sockit.api/SocketError.TlsFailure.<init>|<init>(kotlin.Throwable?){}[0]
+
+        final val cause // dev.adven.sockit.api/SocketError.TlsFailure.cause|{}cause[0]
+            final fun <get-cause>(): kotlin/Throwable? // dev.adven.sockit.api/SocketError.TlsFailure.cause.<get-cause>|<get-cause>(){}[0]
+
+        final fun component1(): kotlin/Throwable? // dev.adven.sockit.api/SocketError.TlsFailure.component1|component1(){}[0]
+        final fun copy(kotlin/Throwable? = ...): dev.adven.sockit.api/SocketError.TlsFailure // dev.adven.sockit.api/SocketError.TlsFailure.copy|copy(kotlin.Throwable?){}[0]
+        final fun equals(kotlin/Any?): kotlin/Boolean // dev.adven.sockit.api/SocketError.TlsFailure.equals|equals(kotlin.Any?){}[0]
+        final fun hashCode(): kotlin/Int // dev.adven.sockit.api/SocketError.TlsFailure.hashCode|hashCode(){}[0]
+        final fun toString(): kotlin/String // dev.adven.sockit.api/SocketError.TlsFailure.toString|toString(){}[0]
+    }
+
+    final class TransportClosed : dev.adven.sockit.api/SocketError { // dev.adven.sockit.api/SocketError.TransportClosed|null[0]
+        constructor <init>(kotlin/String?) // dev.adven.sockit.api/SocketError.TransportClosed.<init>|<init>(kotlin.String?){}[0]
+
+        final val reason // dev.adven.sockit.api/SocketError.TransportClosed.reason|{}reason[0]
+            final fun <get-reason>(): kotlin/String? // dev.adven.sockit.api/SocketError.TransportClosed.reason.<get-reason>|<get-reason>(){}[0]
+
+        final fun component1(): kotlin/String? // dev.adven.sockit.api/SocketError.TransportClosed.component1|component1(){}[0]
+        final fun copy(kotlin/String? = ...): dev.adven.sockit.api/SocketError.TransportClosed // dev.adven.sockit.api/SocketError.TransportClosed.copy|copy(kotlin.String?){}[0]
+        final fun equals(kotlin/Any?): kotlin/Boolean // dev.adven.sockit.api/SocketError.TransportClosed.equals|equals(kotlin.Any?){}[0]
+        final fun hashCode(): kotlin/Int // dev.adven.sockit.api/SocketError.TransportClosed.hashCode|hashCode(){}[0]
+        final fun toString(): kotlin/String // dev.adven.sockit.api/SocketError.TransportClosed.toString|toString(){}[0]
+    }
+
+    final object PingTimeout : dev.adven.sockit.api/SocketError { // dev.adven.sockit.api/SocketError.PingTimeout|null[0]
+        final fun equals(kotlin/Any?): kotlin/Boolean // dev.adven.sockit.api/SocketError.PingTimeout.equals|equals(kotlin.Any?){}[0]
+        final fun hashCode(): kotlin/Int // dev.adven.sockit.api/SocketError.PingTimeout.hashCode|hashCode(){}[0]
+        final fun toString(): kotlin/String // dev.adven.sockit.api/SocketError.PingTimeout.toString|toString(){}[0]
+    }
+}
+
+sealed interface dev.adven.sockit.api/SocketPayload { // dev.adven.sockit.api/SocketPayload|null[0]
+    final class Binary : dev.adven.sockit.api/SocketPayload { // dev.adven.sockit.api/SocketPayload.Binary|null[0]
+        constructor <init>(kotlinx.io.bytestring/ByteString) // dev.adven.sockit.api/SocketPayload.Binary.<init>|<init>(kotlinx.io.bytestring.ByteString){}[0]
+
+        final val bytes // dev.adven.sockit.api/SocketPayload.Binary.bytes|{}bytes[0]
+            final fun <get-bytes>(): kotlinx.io.bytestring/ByteString // dev.adven.sockit.api/SocketPayload.Binary.bytes.<get-bytes>|<get-bytes>(){}[0]
+
+        final fun component1(): kotlinx.io.bytestring/ByteString // dev.adven.sockit.api/SocketPayload.Binary.component1|component1(){}[0]
+        final fun copy(kotlinx.io.bytestring/ByteString = ...): dev.adven.sockit.api/SocketPayload.Binary // dev.adven.sockit.api/SocketPayload.Binary.copy|copy(kotlinx.io.bytestring.ByteString){}[0]
+        final fun equals(kotlin/Any?): kotlin/Boolean // dev.adven.sockit.api/SocketPayload.Binary.equals|equals(kotlin.Any?){}[0]
+        final fun hashCode(): kotlin/Int // dev.adven.sockit.api/SocketPayload.Binary.hashCode|hashCode(){}[0]
+        final fun toString(): kotlin/String // dev.adven.sockit.api/SocketPayload.Binary.toString|toString(){}[0]
+    }
+
+    final class Json : dev.adven.sockit.api/SocketPayload { // dev.adven.sockit.api/SocketPayload.Json|null[0]
+        constructor <init>(kotlinx.serialization.json/JsonElement) // dev.adven.sockit.api/SocketPayload.Json.<init>|<init>(kotlinx.serialization.json.JsonElement){}[0]
+
+        final val element // dev.adven.sockit.api/SocketPayload.Json.element|{}element[0]
+            final fun <get-element>(): kotlinx.serialization.json/JsonElement // dev.adven.sockit.api/SocketPayload.Json.element.<get-element>|<get-element>(){}[0]
+
+        final fun component1(): kotlinx.serialization.json/JsonElement // dev.adven.sockit.api/SocketPayload.Json.component1|component1(){}[0]
+        final fun copy(kotlinx.serialization.json/JsonElement = ...): dev.adven.sockit.api/SocketPayload.Json // dev.adven.sockit.api/SocketPayload.Json.copy|copy(kotlinx.serialization.json.JsonElement){}[0]
+        final fun equals(kotlin/Any?): kotlin/Boolean // dev.adven.sockit.api/SocketPayload.Json.equals|equals(kotlin.Any?){}[0]
+        final fun hashCode(): kotlin/Int // dev.adven.sockit.api/SocketPayload.Json.hashCode|hashCode(){}[0]
+        final fun toString(): kotlin/String // dev.adven.sockit.api/SocketPayload.Json.toString|toString(){}[0]
+    }
+
+    final class Text : dev.adven.sockit.api/SocketPayload { // dev.adven.sockit.api/SocketPayload.Text|null[0]
+        constructor <init>(kotlin/String) // dev.adven.sockit.api/SocketPayload.Text.<init>|<init>(kotlin.String){}[0]
+
+        final val value // dev.adven.sockit.api/SocketPayload.Text.value|{}value[0]
+            final fun <get-value>(): kotlin/String // dev.adven.sockit.api/SocketPayload.Text.value.<get-value>|<get-value>(){}[0]
+
+        final fun component1(): kotlin/String // dev.adven.sockit.api/SocketPayload.Text.component1|component1(){}[0]
+        final fun copy(kotlin/String = ...): dev.adven.sockit.api/SocketPayload.Text // dev.adven.sockit.api/SocketPayload.Text.copy|copy(kotlin.String){}[0]
+        final fun equals(kotlin/Any?): kotlin/Boolean // dev.adven.sockit.api/SocketPayload.Text.equals|equals(kotlin.Any?){}[0]
+        final fun hashCode(): kotlin/Int // dev.adven.sockit.api/SocketPayload.Text.hashCode|hashCode(){}[0]
+        final fun toString(): kotlin/String // dev.adven.sockit.api/SocketPayload.Text.toString|toString(){}[0]
+    }
+}
+
+final class dev.adven.sockit.api/EventBufferConfig { // dev.adven.sockit.api/EventBufferConfig|null[0]
+    constructor <init>(kotlin/Int = ..., dev.adven.sockit.api/EventBufferOverflow = ...) // dev.adven.sockit.api/EventBufferConfig.<init>|<init>(kotlin.Int;dev.adven.sockit.api.EventBufferOverflow){}[0]
+
+    final val capacity // dev.adven.sockit.api/EventBufferConfig.capacity|{}capacity[0]
+        final fun <get-capacity>(): kotlin/Int // dev.adven.sockit.api/EventBufferConfig.capacity.<get-capacity>|<get-capacity>(){}[0]
+    final val overflow // dev.adven.sockit.api/EventBufferConfig.overflow|{}overflow[0]
+        final fun <get-overflow>(): dev.adven.sockit.api/EventBufferOverflow // dev.adven.sockit.api/EventBufferConfig.overflow.<get-overflow>|<get-overflow>(){}[0]
+
+    final fun component1(): kotlin/Int // dev.adven.sockit.api/EventBufferConfig.component1|component1(){}[0]
+    final fun component2(): dev.adven.sockit.api/EventBufferOverflow // dev.adven.sockit.api/EventBufferConfig.component2|component2(){}[0]
+    final fun copy(kotlin/Int = ..., dev.adven.sockit.api/EventBufferOverflow = ...): dev.adven.sockit.api/EventBufferConfig // dev.adven.sockit.api/EventBufferConfig.copy|copy(kotlin.Int;dev.adven.sockit.api.EventBufferOverflow){}[0]
+    final fun equals(kotlin/Any?): kotlin/Boolean // dev.adven.sockit.api/EventBufferConfig.equals|equals(kotlin.Any?){}[0]
+    final fun hashCode(): kotlin/Int // dev.adven.sockit.api/EventBufferConfig.hashCode|hashCode(){}[0]
+    final fun toString(): kotlin/String // dev.adven.sockit.api/EventBufferConfig.toString|toString(){}[0]
+}
+
+final class dev.adven.sockit.api/SocketClient { // dev.adven.sockit.api/SocketClient|null[0]
+    final val connectionState // dev.adven.sockit.api/SocketClient.connectionState|{}connectionState[0]
+        final fun <get-connectionState>(): kotlinx.coroutines.flow/StateFlow<dev.adven.sockit.api/ConnectionState> // dev.adven.sockit.api/SocketClient.connectionState.<get-connectionState>|<get-connectionState>(){}[0]
+    final val errors // dev.adven.sockit.api/SocketClient.errors|{}errors[0]
+        final fun <get-errors>(): kotlinx.coroutines.flow/Flow<dev.adven.sockit.api/SocketError> // dev.adven.sockit.api/SocketClient.errors.<get-errors>|<get-errors>(){}[0]
+
+    final fun close() // dev.adven.sockit.api/SocketClient.close|close(){}[0]
+    final fun isConnected(): kotlin/Boolean // dev.adven.sockit.api/SocketClient.isConnected|isConnected(){}[0]
+    final fun isDisconnected(): kotlin/Boolean // dev.adven.sockit.api/SocketClient.isDisconnected|isDisconnected(){}[0]
+    final fun namespace(kotlin/String = ...): dev.adven.sockit.api/NamespaceSocket // dev.adven.sockit.api/SocketClient.namespace|namespace(kotlin.String){}[0]
+    final fun pauseReconnect() // dev.adven.sockit.api/SocketClient.pauseReconnect|pauseReconnect(){}[0]
+    final fun resumeReconnect() // dev.adven.sockit.api/SocketClient.resumeReconnect|resumeReconnect(){}[0]
+    final suspend fun closeAwait() // dev.adven.sockit.api/SocketClient.closeAwait|closeAwait(){}[0]
+    final suspend fun emitAwait(kotlin/String = ..., dev.adven.sockit.api/StreamCommand) // dev.adven.sockit.api/SocketClient.emitAwait|emitAwait(kotlin.String;dev.adven.sockit.api.StreamCommand){}[0]
+    final suspend fun emitAwait(kotlin/String = ..., kotlin/String, kotlin/Array<out kotlin/Any?>...) // dev.adven.sockit.api/SocketClient.emitAwait|emitAwait(kotlin.String;kotlin.String;kotlin.Array<out|kotlin.Any?>...){}[0]
+    final suspend fun openAwait(kotlin/String = ...) // dev.adven.sockit.api/SocketClient.openAwait|openAwait(kotlin.String){}[0]
+
+    final object Companion { // dev.adven.sockit.api/SocketClient.Companion|null[0]
+        final suspend fun connect(kotlin/String, dev.adven.sockit.api/SocketOptions = ...): dev.adven.sockit.api/SocketClient // dev.adven.sockit.api/SocketClient.Companion.connect|connect(kotlin.String;dev.adven.sockit.api.SocketOptions){}[0]
+    }
+}
+
+final class dev.adven.sockit.api/SocketCommand : dev.adven.sockit.api/StreamCommand { // dev.adven.sockit.api/SocketCommand|null[0]
+    constructor <init>(kotlin/String, kotlinx.serialization.json/JsonElement) // dev.adven.sockit.api/SocketCommand.<init>|<init>(kotlin.String;kotlinx.serialization.json.JsonElement){}[0]
+
+    final val eventName // dev.adven.sockit.api/SocketCommand.eventName|{}eventName[0]
+        final fun <get-eventName>(): kotlin/String // dev.adven.sockit.api/SocketCommand.eventName.<get-eventName>|<get-eventName>(){}[0]
+    final val payload // dev.adven.sockit.api/SocketCommand.payload|{}payload[0]
+        final fun <get-payload>(): kotlinx.serialization.json/JsonElement // dev.adven.sockit.api/SocketCommand.payload.<get-payload>|<get-payload>(){}[0]
+
+    final fun component1(): kotlin/String // dev.adven.sockit.api/SocketCommand.component1|component1(){}[0]
+    final fun component2(): kotlinx.serialization.json/JsonElement // dev.adven.sockit.api/SocketCommand.component2|component2(){}[0]
+    final fun copy(kotlin/String = ..., kotlinx.serialization.json/JsonElement = ...): dev.adven.sockit.api/SocketCommand // dev.adven.sockit.api/SocketCommand.copy|copy(kotlin.String;kotlinx.serialization.json.JsonElement){}[0]
+    final fun equals(kotlin/Any?): kotlin/Boolean // dev.adven.sockit.api/SocketCommand.equals|equals(kotlin.Any?){}[0]
+    final fun hashCode(): kotlin/Int // dev.adven.sockit.api/SocketCommand.hashCode|hashCode(){}[0]
+    final fun toString(): kotlin/String // dev.adven.sockit.api/SocketCommand.toString|toString(){}[0]
+}
+
+final class dev.adven.sockit.api/SocketEvent { // dev.adven.sockit.api/SocketEvent|null[0]
+    constructor <init>(kotlin/String, kotlin.collections/List<dev.adven.sockit.api/SocketPayload>) // dev.adven.sockit.api/SocketEvent.<init>|<init>(kotlin.String;kotlin.collections.List<dev.adven.sockit.api.SocketPayload>){}[0]
+
+    final val args // dev.adven.sockit.api/SocketEvent.args|{}args[0]
+        final fun <get-args>(): kotlin.collections/List<dev.adven.sockit.api/SocketPayload> // dev.adven.sockit.api/SocketEvent.args.<get-args>|<get-args>(){}[0]
+    final val name // dev.adven.sockit.api/SocketEvent.name|{}name[0]
+        final fun <get-name>(): kotlin/String // dev.adven.sockit.api/SocketEvent.name.<get-name>|<get-name>(){}[0]
+
+    final var ack // dev.adven.sockit.api/SocketEvent.ack|{}ack[0]
+        final fun <get-ack>(): dev.adven.sockit.api/Ack? // dev.adven.sockit.api/SocketEvent.ack.<get-ack>|<get-ack>(){}[0]
+
+    final fun component1(): kotlin/String // dev.adven.sockit.api/SocketEvent.component1|component1(){}[0]
+    final fun component2(): kotlin.collections/List<dev.adven.sockit.api/SocketPayload> // dev.adven.sockit.api/SocketEvent.component2|component2(){}[0]
+    final fun copy(kotlin/String = ..., kotlin.collections/List<dev.adven.sockit.api/SocketPayload> = ...): dev.adven.sockit.api/SocketEvent // dev.adven.sockit.api/SocketEvent.copy|copy(kotlin.String;kotlin.collections.List<dev.adven.sockit.api.SocketPayload>){}[0]
+    final fun equals(kotlin/Any?): kotlin/Boolean // dev.adven.sockit.api/SocketEvent.equals|equals(kotlin.Any?){}[0]
+    final fun hashCode(): kotlin/Int // dev.adven.sockit.api/SocketEvent.hashCode|hashCode(){}[0]
+    final fun toString(): kotlin/String // dev.adven.sockit.api/SocketEvent.toString|toString(){}[0]
+}
+
+final class dev.adven.sockit.api/SocketOptions { // dev.adven.sockit.api/SocketOptions|null[0]
+    final val ackTimeoutMs // dev.adven.sockit.api/SocketOptions.ackTimeoutMs|{}ackTimeoutMs[0]
+        final fun <get-ackTimeoutMs>(): kotlin/Long // dev.adven.sockit.api/SocketOptions.ackTimeoutMs.<get-ackTimeoutMs>|<get-ackTimeoutMs>(){}[0]
+    final val auth // dev.adven.sockit.api/SocketOptions.auth|{}auth[0]
+        final fun <get-auth>(): kotlinx.serialization.json/JsonObject // dev.adven.sockit.api/SocketOptions.auth.<get-auth>|<get-auth>(){}[0]
+    final val eventBuffer // dev.adven.sockit.api/SocketOptions.eventBuffer|{}eventBuffer[0]
+        final fun <get-eventBuffer>(): dev.adven.sockit.api/EventBufferConfig // dev.adven.sockit.api/SocketOptions.eventBuffer.<get-eventBuffer>|<get-eventBuffer>(){}[0]
+    final val experimentalWebTransport // dev.adven.sockit.api/SocketOptions.experimentalWebTransport|{}experimentalWebTransport[0]
+        final fun <get-experimentalWebTransport>(): kotlin/Boolean // dev.adven.sockit.api/SocketOptions.experimentalWebTransport.<get-experimentalWebTransport>|<get-experimentalWebTransport>(){}[0]
+    final val extraHeaders // dev.adven.sockit.api/SocketOptions.extraHeaders|{}extraHeaders[0]
+        final fun <get-extraHeaders>(): kotlin.collections/Map<kotlin/String, kotlin.collections/List<kotlin/String>> // dev.adven.sockit.api/SocketOptions.extraHeaders.<get-extraHeaders>|<get-extraHeaders>(){}[0]
+    final val forceNew // dev.adven.sockit.api/SocketOptions.forceNew|{}forceNew[0]
+        final fun <get-forceNew>(): kotlin/Boolean // dev.adven.sockit.api/SocketOptions.forceNew.<get-forceNew>|<get-forceNew>(){}[0]
+    final val httpClient // dev.adven.sockit.api/SocketOptions.httpClient|{}httpClient[0]
+        final fun <get-httpClient>(): io.ktor.client/HttpClient? // dev.adven.sockit.api/SocketOptions.httpClient.<get-httpClient>|<get-httpClient>(){}[0]
+    final val logger // dev.adven.sockit.api/SocketOptions.logger|{}logger[0]
+        final fun <get-logger>(): dev.adven.sockit.api/Logger // dev.adven.sockit.api/SocketOptions.logger.<get-logger>|<get-logger>(){}[0]
+    final val multiplex // dev.adven.sockit.api/SocketOptions.multiplex|{}multiplex[0]
+        final fun <get-multiplex>(): kotlin/Boolean // dev.adven.sockit.api/SocketOptions.multiplex.<get-multiplex>|<get-multiplex>(){}[0]
+    final val path // dev.adven.sockit.api/SocketOptions.path|{}path[0]
+        final fun <get-path>(): kotlin/String // dev.adven.sockit.api/SocketOptions.path.<get-path>|<get-path>(){}[0]
+    final val randomizationFactor // dev.adven.sockit.api/SocketOptions.randomizationFactor|{}randomizationFactor[0]
+        final fun <get-randomizationFactor>(): kotlin/Double // dev.adven.sockit.api/SocketOptions.randomizationFactor.<get-randomizationFactor>|<get-randomizationFactor>(){}[0]
+    final val reconnection // dev.adven.sockit.api/SocketOptions.reconnection|{}reconnection[0]
+        final fun <get-reconnection>(): kotlin/Boolean // dev.adven.sockit.api/SocketOptions.reconnection.<get-reconnection>|<get-reconnection>(){}[0]
+    final val reconnectionAttempts // dev.adven.sockit.api/SocketOptions.reconnectionAttempts|{}reconnectionAttempts[0]
+        final fun <get-reconnectionAttempts>(): kotlin/Int // dev.adven.sockit.api/SocketOptions.reconnectionAttempts.<get-reconnectionAttempts>|<get-reconnectionAttempts>(){}[0]
+    final val reconnectionDelayMaxMs // dev.adven.sockit.api/SocketOptions.reconnectionDelayMaxMs|{}reconnectionDelayMaxMs[0]
+        final fun <get-reconnectionDelayMaxMs>(): kotlin/Long // dev.adven.sockit.api/SocketOptions.reconnectionDelayMaxMs.<get-reconnectionDelayMaxMs>|<get-reconnectionDelayMaxMs>(){}[0]
+    final val reconnectionDelayMs // dev.adven.sockit.api/SocketOptions.reconnectionDelayMs|{}reconnectionDelayMs[0]
+        final fun <get-reconnectionDelayMs>(): kotlin/Long // dev.adven.sockit.api/SocketOptions.reconnectionDelayMs.<get-reconnectionDelayMs>|<get-reconnectionDelayMs>(){}[0]
+    final val timeoutMs // dev.adven.sockit.api/SocketOptions.timeoutMs|{}timeoutMs[0]
+        final fun <get-timeoutMs>(): kotlin/Long // dev.adven.sockit.api/SocketOptions.timeoutMs.<get-timeoutMs>|<get-timeoutMs>(){}[0]
+    final val transports // dev.adven.sockit.api/SocketOptions.transports|{}transports[0]
+        final fun <get-transports>(): kotlin.collections/List<kotlin/String> // dev.adven.sockit.api/SocketOptions.transports.<get-transports>|<get-transports>(){}[0]
+    final val trustAllCerts // dev.adven.sockit.api/SocketOptions.trustAllCerts|{}trustAllCerts[0]
+        final fun <get-trustAllCerts>(): kotlin/Boolean // dev.adven.sockit.api/SocketOptions.trustAllCerts.<get-trustAllCerts>|<get-trustAllCerts>(){}[0]
+    final val upgrade // dev.adven.sockit.api/SocketOptions.upgrade|{}upgrade[0]
+        final fun <get-upgrade>(): kotlin/Boolean // dev.adven.sockit.api/SocketOptions.upgrade.<get-upgrade>|<get-upgrade>(){}[0]
+}
+
+final class dev.adven.sockit.api/SocketOptionsBuilder { // dev.adven.sockit.api/SocketOptionsBuilder|null[0]
+    constructor <init>() // dev.adven.sockit.api/SocketOptionsBuilder.<init>|<init>(){}[0]
+
+    final var ackTimeoutMs // dev.adven.sockit.api/SocketOptionsBuilder.ackTimeoutMs|{}ackTimeoutMs[0]
+        final fun <get-ackTimeoutMs>(): kotlin/Long // dev.adven.sockit.api/SocketOptionsBuilder.ackTimeoutMs.<get-ackTimeoutMs>|<get-ackTimeoutMs>(){}[0]
+        final fun <set-ackTimeoutMs>(kotlin/Long) // dev.adven.sockit.api/SocketOptionsBuilder.ackTimeoutMs.<set-ackTimeoutMs>|<set-ackTimeoutMs>(kotlin.Long){}[0]
+    final var eventBufferCapacity // dev.adven.sockit.api/SocketOptionsBuilder.eventBufferCapacity|{}eventBufferCapacity[0]
+        final fun <get-eventBufferCapacity>(): kotlin/Int // dev.adven.sockit.api/SocketOptionsBuilder.eventBufferCapacity.<get-eventBufferCapacity>|<get-eventBufferCapacity>(){}[0]
+        final fun <set-eventBufferCapacity>(kotlin/Int) // dev.adven.sockit.api/SocketOptionsBuilder.eventBufferCapacity.<set-eventBufferCapacity>|<set-eventBufferCapacity>(kotlin.Int){}[0]
+    final var eventBufferOverflow // dev.adven.sockit.api/SocketOptionsBuilder.eventBufferOverflow|{}eventBufferOverflow[0]
+        final fun <get-eventBufferOverflow>(): dev.adven.sockit.api/EventBufferOverflow // dev.adven.sockit.api/SocketOptionsBuilder.eventBufferOverflow.<get-eventBufferOverflow>|<get-eventBufferOverflow>(){}[0]
+        final fun <set-eventBufferOverflow>(dev.adven.sockit.api/EventBufferOverflow) // dev.adven.sockit.api/SocketOptionsBuilder.eventBufferOverflow.<set-eventBufferOverflow>|<set-eventBufferOverflow>(dev.adven.sockit.api.EventBufferOverflow){}[0]
+    final var experimentalWebTransport // dev.adven.sockit.api/SocketOptionsBuilder.experimentalWebTransport|{}experimentalWebTransport[0]
+        final fun <get-experimentalWebTransport>(): kotlin/Boolean // dev.adven.sockit.api/SocketOptionsBuilder.experimentalWebTransport.<get-experimentalWebTransport>|<get-experimentalWebTransport>(){}[0]
+        final fun <set-experimentalWebTransport>(kotlin/Boolean) // dev.adven.sockit.api/SocketOptionsBuilder.experimentalWebTransport.<set-experimentalWebTransport>|<set-experimentalWebTransport>(kotlin.Boolean){}[0]
+    final var forceNew // dev.adven.sockit.api/SocketOptionsBuilder.forceNew|{}forceNew[0]
+        final fun <get-forceNew>(): kotlin/Boolean // dev.adven.sockit.api/SocketOptionsBuilder.forceNew.<get-forceNew>|<get-forceNew>(){}[0]
+        final fun <set-forceNew>(kotlin/Boolean) // dev.adven.sockit.api/SocketOptionsBuilder.forceNew.<set-forceNew>|<set-forceNew>(kotlin.Boolean){}[0]
+    final var httpClient // dev.adven.sockit.api/SocketOptionsBuilder.httpClient|{}httpClient[0]
+        final fun <get-httpClient>(): io.ktor.client/HttpClient? // dev.adven.sockit.api/SocketOptionsBuilder.httpClient.<get-httpClient>|<get-httpClient>(){}[0]
+        final fun <set-httpClient>(io.ktor.client/HttpClient?) // dev.adven.sockit.api/SocketOptionsBuilder.httpClient.<set-httpClient>|<set-httpClient>(io.ktor.client.HttpClient?){}[0]
+    final var logger // dev.adven.sockit.api/SocketOptionsBuilder.logger|{}logger[0]
+        final fun <get-logger>(): dev.adven.sockit.api/Logger // dev.adven.sockit.api/SocketOptionsBuilder.logger.<get-logger>|<get-logger>(){}[0]
+        final fun <set-logger>(dev.adven.sockit.api/Logger) // dev.adven.sockit.api/SocketOptionsBuilder.logger.<set-logger>|<set-logger>(dev.adven.sockit.api.Logger){}[0]
+    final var multiplex // dev.adven.sockit.api/SocketOptionsBuilder.multiplex|{}multiplex[0]
+        final fun <get-multiplex>(): kotlin/Boolean // dev.adven.sockit.api/SocketOptionsBuilder.multiplex.<get-multiplex>|<get-multiplex>(){}[0]
+        final fun <set-multiplex>(kotlin/Boolean) // dev.adven.sockit.api/SocketOptionsBuilder.multiplex.<set-multiplex>|<set-multiplex>(kotlin.Boolean){}[0]
+    final var path // dev.adven.sockit.api/SocketOptionsBuilder.path|{}path[0]
+        final fun <get-path>(): kotlin/String // dev.adven.sockit.api/SocketOptionsBuilder.path.<get-path>|<get-path>(){}[0]
+        final fun <set-path>(kotlin/String) // dev.adven.sockit.api/SocketOptionsBuilder.path.<set-path>|<set-path>(kotlin.String){}[0]
+    final var randomizationFactor // dev.adven.sockit.api/SocketOptionsBuilder.randomizationFactor|{}randomizationFactor[0]
+        final fun <get-randomizationFactor>(): kotlin/Double // dev.adven.sockit.api/SocketOptionsBuilder.randomizationFactor.<get-randomizationFactor>|<get-randomizationFactor>(){}[0]
+        final fun <set-randomizationFactor>(kotlin/Double) // dev.adven.sockit.api/SocketOptionsBuilder.randomizationFactor.<set-randomizationFactor>|<set-randomizationFactor>(kotlin.Double){}[0]
+    final var reconnection // dev.adven.sockit.api/SocketOptionsBuilder.reconnection|{}reconnection[0]
+        final fun <get-reconnection>(): kotlin/Boolean // dev.adven.sockit.api/SocketOptionsBuilder.reconnection.<get-reconnection>|<get-reconnection>(){}[0]
+        final fun <set-reconnection>(kotlin/Boolean) // dev.adven.sockit.api/SocketOptionsBuilder.reconnection.<set-reconnection>|<set-reconnection>(kotlin.Boolean){}[0]
+    final var reconnectionAttempts // dev.adven.sockit.api/SocketOptionsBuilder.reconnectionAttempts|{}reconnectionAttempts[0]
+        final fun <get-reconnectionAttempts>(): kotlin/Int // dev.adven.sockit.api/SocketOptionsBuilder.reconnectionAttempts.<get-reconnectionAttempts>|<get-reconnectionAttempts>(){}[0]
+        final fun <set-reconnectionAttempts>(kotlin/Int) // dev.adven.sockit.api/SocketOptionsBuilder.reconnectionAttempts.<set-reconnectionAttempts>|<set-reconnectionAttempts>(kotlin.Int){}[0]
+    final var reconnectionDelayMaxMs // dev.adven.sockit.api/SocketOptionsBuilder.reconnectionDelayMaxMs|{}reconnectionDelayMaxMs[0]
+        final fun <get-reconnectionDelayMaxMs>(): kotlin/Long // dev.adven.sockit.api/SocketOptionsBuilder.reconnectionDelayMaxMs.<get-reconnectionDelayMaxMs>|<get-reconnectionDelayMaxMs>(){}[0]
+        final fun <set-reconnectionDelayMaxMs>(kotlin/Long) // dev.adven.sockit.api/SocketOptionsBuilder.reconnectionDelayMaxMs.<set-reconnectionDelayMaxMs>|<set-reconnectionDelayMaxMs>(kotlin.Long){}[0]
+    final var reconnectionDelayMs // dev.adven.sockit.api/SocketOptionsBuilder.reconnectionDelayMs|{}reconnectionDelayMs[0]
+        final fun <get-reconnectionDelayMs>(): kotlin/Long // dev.adven.sockit.api/SocketOptionsBuilder.reconnectionDelayMs.<get-reconnectionDelayMs>|<get-reconnectionDelayMs>(){}[0]
+        final fun <set-reconnectionDelayMs>(kotlin/Long) // dev.adven.sockit.api/SocketOptionsBuilder.reconnectionDelayMs.<set-reconnectionDelayMs>|<set-reconnectionDelayMs>(kotlin.Long){}[0]
+    final var timeoutMs // dev.adven.sockit.api/SocketOptionsBuilder.timeoutMs|{}timeoutMs[0]
+        final fun <get-timeoutMs>(): kotlin/Long // dev.adven.sockit.api/SocketOptionsBuilder.timeoutMs.<get-timeoutMs>|<get-timeoutMs>(){}[0]
+        final fun <set-timeoutMs>(kotlin/Long) // dev.adven.sockit.api/SocketOptionsBuilder.timeoutMs.<set-timeoutMs>|<set-timeoutMs>(kotlin.Long){}[0]
+    final var trustAllCerts // dev.adven.sockit.api/SocketOptionsBuilder.trustAllCerts|{}trustAllCerts[0]
+        final fun <get-trustAllCerts>(): kotlin/Boolean // dev.adven.sockit.api/SocketOptionsBuilder.trustAllCerts.<get-trustAllCerts>|<get-trustAllCerts>(){}[0]
+        final fun <set-trustAllCerts>(kotlin/Boolean) // dev.adven.sockit.api/SocketOptionsBuilder.trustAllCerts.<set-trustAllCerts>|<set-trustAllCerts>(kotlin.Boolean){}[0]
+    final var upgrade // dev.adven.sockit.api/SocketOptionsBuilder.upgrade|{}upgrade[0]
+        final fun <get-upgrade>(): kotlin/Boolean // dev.adven.sockit.api/SocketOptionsBuilder.upgrade.<get-upgrade>|<get-upgrade>(){}[0]
+        final fun <set-upgrade>(kotlin/Boolean) // dev.adven.sockit.api/SocketOptionsBuilder.upgrade.<set-upgrade>|<set-upgrade>(kotlin.Boolean){}[0]
+
+    final fun auth(kotlin/Function1<kotlinx.serialization.json/JsonObjectBuilder, kotlin/Unit>) // dev.adven.sockit.api/SocketOptionsBuilder.auth|auth(kotlin.Function1<kotlinx.serialization.json.JsonObjectBuilder,kotlin.Unit>){}[0]
+    final fun extraHeaders(kotlin/Function1<kotlin.collections/MutableMap<kotlin/String, kotlin.collections/List<kotlin/String>>, kotlin/Unit>) // dev.adven.sockit.api/SocketOptionsBuilder.extraHeaders|extraHeaders(kotlin.Function1<kotlin.collections.MutableMap<kotlin.String,kotlin.collections.List<kotlin.String>>,kotlin.Unit>){}[0]
+    final fun transports(kotlin/Array<out kotlin/String>...) // dev.adven.sockit.api/SocketOptionsBuilder.transports|transports(kotlin.Array<out|kotlin.String>...){}[0]
+}
+
+final class dev.adven.sockit.api/Subscribe : dev.adven.sockit.api/StreamCommand { // dev.adven.sockit.api/Subscribe|null[0]
+    constructor <init>(kotlinx.serialization.json/JsonElement) // dev.adven.sockit.api/Subscribe.<init>|<init>(kotlinx.serialization.json.JsonElement){}[0]
+
+    final val eventName // dev.adven.sockit.api/Subscribe.eventName|{}eventName[0]
+        final fun <get-eventName>(): kotlin/String // dev.adven.sockit.api/Subscribe.eventName.<get-eventName>|<get-eventName>(){}[0]
+    final val payload // dev.adven.sockit.api/Subscribe.payload|{}payload[0]
+        final fun <get-payload>(): kotlinx.serialization.json/JsonElement // dev.adven.sockit.api/Subscribe.payload.<get-payload>|<get-payload>(){}[0]
+}
+
+final class dev.adven.sockit.api/Unsubscribe : dev.adven.sockit.api/StreamCommand { // dev.adven.sockit.api/Unsubscribe|null[0]
+    constructor <init>(kotlinx.serialization.json/JsonElement) // dev.adven.sockit.api/Unsubscribe.<init>|<init>(kotlinx.serialization.json.JsonElement){}[0]
+
+    final val eventName // dev.adven.sockit.api/Unsubscribe.eventName|{}eventName[0]
+        final fun <get-eventName>(): kotlin/String // dev.adven.sockit.api/Unsubscribe.eventName.<get-eventName>|<get-eventName>(){}[0]
+    final val payload // dev.adven.sockit.api/Unsubscribe.payload|{}payload[0]
+        final fun <get-payload>(): kotlinx.serialization.json/JsonElement // dev.adven.sockit.api/Unsubscribe.payload.<get-payload>|<get-payload>(){}[0]
+}
+
+sealed class dev.adven.sockit.api/SocketException : kotlin/Exception { // dev.adven.sockit.api/SocketException|null[0]
+    final val error // dev.adven.sockit.api/SocketException.error|{}error[0]
+        final fun <get-error>(): dev.adven.sockit.api/SocketError // dev.adven.sockit.api/SocketException.error.<get-error>|<get-error>(){}[0]
+
+    final class ConnectionFailed : dev.adven.sockit.api/SocketException // dev.adven.sockit.api/SocketException.ConnectionFailed|null[0]
+
+    final class SendFailed : dev.adven.sockit.api/SocketException // dev.adven.sockit.api/SocketException.SendFailed|null[0]
+}
+
+final object dev.adven.sockit.api/Transports { // dev.adven.sockit.api/Transports|null[0]
+    final const val POLLING // dev.adven.sockit.api/Transports.POLLING|{}POLLING[0]
+        final fun <get-POLLING>(): kotlin/String // dev.adven.sockit.api/Transports.POLLING.<get-POLLING>|<get-POLLING>(){}[0]
+    final const val WEBSOCKET // dev.adven.sockit.api/Transports.WEBSOCKET|{}WEBSOCKET[0]
+        final fun <get-WEBSOCKET>(): kotlin/String // dev.adven.sockit.api/Transports.WEBSOCKET.<get-WEBSOCKET>|<get-WEBSOCKET>(){}[0]
+    final const val WEBTRANSPORT // dev.adven.sockit.api/Transports.WEBTRANSPORT|{}WEBTRANSPORT[0]
+        final fun <get-WEBTRANSPORT>(): kotlin/String // dev.adven.sockit.api/Transports.WEBTRANSPORT.<get-WEBTRANSPORT>|<get-WEBTRANSPORT>(){}[0]
+}
+
+final fun dev.adven.sockit.api/socketOptions(kotlin/Function1<dev.adven.sockit.api/SocketOptionsBuilder, kotlin/Unit>): dev.adven.sockit.api/SocketOptions // dev.adven.sockit.api/socketOptions|socketOptions(kotlin.Function1<dev.adven.sockit.api.SocketOptionsBuilder,kotlin.Unit>){}[0]

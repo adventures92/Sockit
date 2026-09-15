@@ -1,0 +1,218 @@
+name: socketio-ci
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+  workflow_dispatch:
+
+jobs:
+  quality-and-test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up JDK 21
+        uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: 21
+
+      # Dependency + build caching, and Gradle wrapper checksum validation.
+      - uses: gradle/actions/setup-gradle@v4
+
+      - name: Setup Node (echo server for jvmTest)
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+
+      - name: Start echo server
+        run: |
+          cd socketio/src/jvmTest/resources
+          npm ci
+          node socket-server.js &
+          sleep 2
+
+      - name: Spotless check
+        run: ./gradlew spotlessCheck
+
+      - name: detekt
+        run: ./gradlew :socketio:detekt
+
+      - name: API stability
+        run: ./gradlew :socketio:apiCheck
+
+      - name: Dokka HTML
+        run: ./gradlew :socketio:dokkaGeneratePublicationHtml
+
+      - name: KMP compile
+        run: |
+          ./gradlew :socketio:compileAndroidMain \
+            :socketio:compileKotlinIosSimulatorArm64 \
+            :socketio:compileKotlinJvm
+
+      - name: Shared compile
+        run: |
+          ./gradlew :shared:compileAndroidMain \
+            :shared:compileKotlinIosSimulatorArm64
+
+      - name: Release minify (R8 smoke)
+        run: ./gradlew :androidApp:assembleRelease
+
+      - name: JVM tests
+        run: ./gradlew :socketio:jvmTest
+
+      - name: Upload Dokka HTML
+        uses: actions/upload-artifact@v4
+        with:
+          name: socketio-dokka-html
+          path: socketio/build/dokka/html
+          if-no-files-found: error
+
+      - name: Encapsulation scan
+        run: |
+          ! grep -rEn 'dev\.adven\.sockit\.(internal|protocol|transport|engineio|socketio|connection|platform)' shared/src
+
+      - name: Forbidden deps scan
+        run: |
+          ! grep -rEn "hildan|kmp-xlog|socket\.io-client" socketio/src socketio/*.kts socketio/*.pro
+
+  # socket.io server npm version matrix — smoke tests only (CH3 G-P3-4).
+  server-compatibility:
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - socket-io-version: "4.5.4"
+            recovery: "0"
+          - socket-io-version: "4.6.2"
+            recovery: "0"
+          - socket-io-version: "4.6.2"
+            recovery: "1"
+          - socket-io-version: "4.7.5"
+            recovery: "0"
+          - socket-io-version: "4.8.1"
+            recovery: "0"
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up JDK 21
+        uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: 21
+
+      # Dependency + build caching, and Gradle wrapper checksum validation.
+      - uses: gradle/actions/setup-gradle@v4
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+
+      - name: Install socket.io@${{ matrix.socket-io-version }} and start echo server
+        env:
+          SOCKET_IO_RECOVERY: ${{ matrix.recovery }}
+        run: |
+          cd socketio/src/jvmTest/resources
+          npm install socket.io@${{ matrix.socket-io-version }} --no-save
+          node socket-server.js &
+          sleep 2
+
+      - name: Server compatibility smoke (socket.io@${{ matrix.socket-io-version }}, recovery=${{ matrix.recovery }})
+        env:
+          SOCKET_IO_RECOVERY: ${{ matrix.recovery }}
+        run: |
+          ./gradlew :socketio:jvmTest --tests "dev.adven.sockit.ServerCompatibilitySmokeTest"
+
+  # macOS platform smoke — iOS simulator on every PR; Android device tests are manual (see job below).
+  platform-smoke:
+    runs-on: macos-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up JDK 21
+        uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: 21
+
+      # Dependency + build caching, and Gradle wrapper checksum validation.
+      - uses: gradle/actions/setup-gradle@v4
+
+      - name: Setup Node (echo server for platform smoke)
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+
+      - name: Start echo server
+        run: |
+          cd socketio/src/jvmTest/resources
+          npm ci
+          node socket-server.js &
+          sleep 2
+
+      - name: iOS simulator smoke
+        run: ./gradlew :socketio:iosSimulatorArm64Test
+
+  # Android connected tests need an emulator or physical device — run manually before release.
+  # To enable in CI: add reactivecircus/android-emulator-runner and wire connectedDebugAndroidTest.
+  platform-smoke-android:
+    runs-on: macos-latest
+    if: github.event_name == 'workflow_dispatch'
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up JDK 21
+        uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: 21
+
+      # Dependency + build caching, and Gradle wrapper checksum validation.
+      - uses: gradle/actions/setup-gradle@v4
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+
+      - name: Start echo server
+        run: |
+          cd socketio/src/jvmTest/resources
+          npm ci
+          node socket-server.js &
+          sleep 2
+
+      - name: Android device smoke (requires connected device or emulator)
+        run: ./gradlew :socketio:connectedAndroidDeviceTest
+
+  # Resolves the PUBLISHED artifact from mavenLocal and compiles the README quickstart, so the
+  # consumer compile classpath is a gate. Catches api()/implementation() scope mistakes that the
+  # in-repo :shared module hides by declaring the same dependencies itself.
+  consumer-smoke:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up JDK 21
+        uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: 21
+
+      - uses: gradle/actions/setup-gradle@v4
+
+      - name: Publish :socketio to mavenLocal
+        run: >
+          ./gradlew :socketio:publishAndroidPublicationToMavenLocal
+          :socketio:publishJvmPublicationToMavenLocal
+          :socketio:publishKotlinMultiplatformPublicationToMavenLocal
+          -PVERSION_NAME=0.0.0-ci --no-configuration-cache
+
+      - name: Compile a consumer against it
+        run: |
+          ./gradlew -p .github/consumer-smoke build \
+            -PsockitVersion=0.0.0-ci --no-configuration-cache

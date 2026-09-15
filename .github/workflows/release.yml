@@ -1,0 +1,232 @@
+name: release
+
+# Tag-driven release for :socketio.
+#
+#   git tag v0.0.1 && git push origin v0.0.1
+#
+# Runs the full gate first, publishes to Maven Central, then creates the GitHub Release with the
+# demo APK and the API docs attached. Nothing publishes unless `verify` is green.
+#
+# Required repository secrets — names follow the official Kotlin Multiplatform publishing tutorial
+# (https://kotlinlang.org/docs/multiplatform-publish-libraries-to-maven.html):
+#   MAVEN_CENTRAL_USERNAME / MAVEN_CENTRAL_PASSWORD  — Central Portal user token
+#   GPG_KEY_CONTENTS                                 — full contents of `gpg --armor --export-secret-keys <KEY_ID>`
+#   SIGNING_PASSWORD                                 — passphrase used when the key was generated
+#   SIGNING_KEY_ID                                   — LAST 8 characters of the key fingerprint
+
+on:
+  push:
+    tags: ["v*"]
+  workflow_dispatch:
+    inputs:
+      version:
+        description: "Version to publish (no leading 'v'), e.g. 0.0.1"
+        required: true
+      dry_run:
+        description: "Run the gate and build artifacts, but do not publish"
+        type: boolean
+        default: false
+
+concurrency:
+  group: release-${{ github.ref }}
+  cancel-in-progress: false
+
+permissions:
+  contents: read
+
+jobs:
+  # ---------------------------------------------------------------- 1. gate
+  verify:
+    name: Verify
+    runs-on: macos-latest
+    outputs:
+      version: ${{ steps.version.outputs.value }}
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Resolve version
+        id: version
+        run: |
+          if [ "${{ github.event_name }}" = "workflow_dispatch" ]; then
+            VERSION="${{ github.event.inputs.version }}"
+          else
+            VERSION="${GITHUB_REF_NAME#v}"
+          fi
+          if ! printf '%s' "$VERSION" | grep -Eq '^[0-9]+\.[0-9]+\.[0-9]+(-[0-9A-Za-z.-]+)?$'; then
+            echo "::error::'$VERSION' is not a semantic version"
+            exit 1
+          fi
+          echo "value=$VERSION" >> "$GITHUB_OUTPUT"
+
+      - name: Check CHANGELOG has an entry for this version
+        run: |
+          if ! grep -q "^## \[${{ steps.version.outputs.value }}\]" CHANGELOG.md; then
+            echo "::error::CHANGELOG.md has no '## [${{ steps.version.outputs.value }}]' section"
+            exit 1
+          fi
+
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: 21
+
+      - uses: gradle/actions/setup-gradle@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+
+      - name: Install echo-server dependencies
+        working-directory: socketio/src/jvmTest/resources
+        run: npm ci
+
+      - name: Static gates
+        run: ./gradlew spotlessCheck :socketio:detekt :socketio:apiCheck
+
+      # Maven Central rejects a deployment whose POM is missing name, description, url, license,
+      # developer or SCM. Cheaper to catch here than after a tag is already pushed.
+      - name: Validate POM metadata for every publication
+        run: >
+          ./gradlew
+          :socketio:checkPomFileForKotlinMultiplatformPublication
+          :socketio:checkPomFileForAndroidPublication
+          :socketio:checkPomFileForIosArm64Publication
+          :socketio:checkPomFileForIosSimulatorArm64Publication
+          :socketio:checkPomFileForJvmPublication
+
+      # A POM can satisfy every required tag and still point at a repository that does not exist.
+      # That is unrecoverable once published — Maven Central never accepts a re-publish of a
+      # version — and klibs.io skips libraries whose POM carries no valid GitHub link.
+      - name: Check the POM's project and SCM URLs resolve
+        run: |
+          POM="$(find socketio/build/publications -name 'pom-default.xml' | head -1)"
+          if [ -z "$POM" ]; then echo "::error::no generated POM found"; exit 1; fi
+          grep -oE '<url>https://github.com/[^<]+</url>' "$POM" \
+            | sed -E 's|</?url>||g; s|\.git$||' | sort -u | while read -r url; do
+              code="$(curl -sS -o /dev/null -w '%{http_code}' -L "$url")"
+              if [ "$code" != "200" ]; then
+                echo "::error::POM URL $url returned HTTP $code"
+                exit 1
+              fi
+              echo "  ok  $url"
+            done
+
+      - name: Compile every target
+        run: |
+          ./gradlew :socketio:compileAndroidMain \
+            :socketio:compileKotlinIosArm64 \
+            :socketio:compileKotlinIosSimulatorArm64 \
+            :socketio:compileKotlinJvm
+
+      - name: JVM tests
+        run: ./gradlew :socketio:jvmTest
+
+      - name: iOS simulator smoke
+        run: ./gradlew :socketio:iosSimulatorArm64Test
+
+  # ------------------------------------------------------------- 2. publish
+  publish:
+    name: Publish to Maven Central
+    # macOS: Kotlin/Native iOS targets only build on an Apple host.
+    runs-on: macos-latest
+    needs: verify
+    if: ${{ !(github.event_name == 'workflow_dispatch' && inputs.dry_run) }}
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: 21
+
+      - uses: gradle/actions/setup-gradle@v4
+
+      - name: Publish
+        env:
+          ORG_GRADLE_PROJECT_mavenCentralUsername: ${{ secrets.MAVEN_CENTRAL_USERNAME }}
+          ORG_GRADLE_PROJECT_mavenCentralPassword: ${{ secrets.MAVEN_CENTRAL_PASSWORD }}
+          ORG_GRADLE_PROJECT_signingInMemoryKey: ${{ secrets.GPG_KEY_CONTENTS }}
+          ORG_GRADLE_PROJECT_signingInMemoryKeyId: ${{ secrets.SIGNING_KEY_ID }}
+          ORG_GRADLE_PROJECT_signingInMemoryKeyPassword: ${{ secrets.SIGNING_PASSWORD }}
+        # publishAndReleaseToMavenCentral promotes the deployment once Central validates it, instead
+        # of leaving it pending a manual Publish click in the portal.
+        # --no-configuration-cache: the publication plugin does not support it (gradle/gradle#22779).
+        run: >
+          ./gradlew :socketio:publishAndReleaseToMavenCentral
+          -PVERSION_NAME=${{ needs.verify.outputs.version }}
+          --no-configuration-cache
+
+  # ------------------------------------------------------------ 3. artifacts
+  artifacts:
+    name: Build release artifacts
+    runs-on: ubuntu-latest
+    needs: verify
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: 21
+
+      - uses: gradle/actions/setup-gradle@v4
+
+      # Debug only: androidApp has no signingConfig, so assembleRelease would emit an unsigned APK
+      # that nobody can install. Add a keystore + signingConfig before switching this to release.
+      - name: Demo APK (debug)
+        run: ./gradlew :androidApp:assembleDebug
+
+      - name: API documentation
+        run: ./gradlew :socketio:dokkaGeneratePublicationHtml
+
+      - name: Stage artifacts
+        run: |
+          VERSION="${{ needs.verify.outputs.version }}"
+          mkdir -p dist
+          cp androidApp/build/outputs/apk/debug/androidApp-debug.apk \
+             "dist/sockit-demo-${VERSION}-debug.apk"
+          tar -czf "dist/sockit-api-docs-${VERSION}.tar.gz" -C socketio/build/dokka html
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: release-artifacts
+          path: dist/
+          if-no-files-found: error
+
+  # -------------------------------------------------------------- 4. release
+  github-release:
+    name: Create GitHub Release
+    runs-on: ubuntu-latest
+    needs: [verify, publish, artifacts]
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/download-artifact@v4
+        with:
+          name: release-artifacts
+          path: dist
+
+      - name: Extract this version's changelog section
+        run: |
+          awk -v v="${{ needs.verify.outputs.version }}" '
+            $0 ~ "^## \\[" v "\\]" { capture = 1; next }
+            capture && /^## \[/     { exit }
+            capture                 { print }
+          ' CHANGELOG.md > release-notes.md
+          echo "" >> release-notes.md
+          echo "---" >> release-notes.md
+          echo "" >> release-notes.md
+          echo '```kotlin' >> release-notes.md
+          echo 'implementation("io.github.adventures92:sockit:${{ needs.verify.outputs.version }}")' >> release-notes.md
+          echo '```' >> release-notes.md
+
+      - name: Publish release
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          gh release create "v${{ needs.verify.outputs.version }}" \
+            --title "v${{ needs.verify.outputs.version }}" \
+            --notes-file release-notes.md \
+            dist/*

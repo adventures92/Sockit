@@ -1,0 +1,40 @@
+name: Feature request
+description: Propose a capability the library does not have.
+labels: ["enhancement", "needs-triage"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Some things are deliberately out of scope — a callback `on`/`emit` API, third-party logging
+        or protocol dependencies, and token refresh. See the Limitations table in
+        [socketio/README.md](https://github.com/adventures92/Sockit/blob/main/socketio/README.md)
+        and `docs/architecture.md` §2 before proposing one of those.
+
+  - type: textarea
+    id: problem
+    attributes:
+      label: The problem
+      description: What are you trying to do that the library makes hard or impossible?
+    validations:
+      required: true
+
+  - type: textarea
+    id: proposal
+    attributes:
+      label: Proposed API
+      description: Roughly what the call site would look like.
+      render: kotlin
+
+  - type: textarea
+    id: alternatives
+    attributes:
+      label: What you tried instead
+      description: Workarounds you have already attempted, and why they fall short.
+
+  - type: checkboxes
+    id: scope
+    attributes:
+      label: Scope
+      options:
+        - label: This would not require a third-party Socket.IO, protocol, or logging dependency
+          required: true
