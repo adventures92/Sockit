@@ -21,3 +21,8 @@ updates:
     directory: "/socketio/src/jvmTest/resources"
     schedule:
       interval: monthly
+
+# gradle/actions is deliberately held at v5. v6 moves caching into `gradle-actions-caching`, a
+# proprietary component whose use requires accepting https://gradle.com/legal/terms-of-use/ — a
+# licensing decision for an Apache-2.0 project, not a version bump. v5 is the Node 24 runtime
+# with caching still MIT-licensed. Revisit deliberately, not via an automated pull request.
