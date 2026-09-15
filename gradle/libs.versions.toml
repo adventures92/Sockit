@@ -22,7 +22,7 @@ spotless = "7.0.2"
 ktlint = "1.5.0"
 detekt = "1.23.8"
 turbine = "1.2.0"
-dokka = "2.0.0"
+dokka = "2.2.0"
 binaryCompatibilityValidator = "0.17.0"
 mavenPublish = "0.37.0"
 
