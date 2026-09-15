@@ -84,6 +84,13 @@ the guide names a type that no longer exists, quotes a stale version, or has a b
 - A matrix job never reports its bare name — it reports `job (values)`. Requiring the bare name as
   a status check blocks every pull request forever. That is what `server-compatibility-gate` is
   for.
+- **An action pinned to a dead Node runtime warns on every run and eventually breaks.** GitHub
+  forces the action onto a newer Node and annotates the run. Check the action's *released tag*, not
+  its default branch: `peaceiris/actions-mdbook` fixed this on `main` but has cut no release since
+  April 2024, so there was no tag to move to. When an action is a thin wrapper around installing one
+  static binary, install the binary instead — that is what `docs.yml` does for mdBook, and it pins
+  the version besides. `node-version:` on `setup-node` is a separate axis: that is the Node *our*
+  test server runs on, and it needs to stay on a supported LTS.
 
 ## The guide is prose, and prose rots
 

@@ -83,7 +83,7 @@ jobs:
 
       - uses: actions/setup-node@v7
         with:
-          node-version: 20
+          node-version: 24
 
       # jvmTest spawns its own server via SocketTestServer, but the iOS simulator suite cannot fork
       # a process — PlatformEchoServer only probes localhost:3000 and skips/fails if nothing is

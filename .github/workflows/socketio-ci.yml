@@ -27,7 +27,7 @@ jobs:
       - name: Setup Node (echo server for jvmTest)
         uses: actions/setup-node@v7
         with:
-          node-version: 20
+          node-version: 24
 
       - name: Start echo server
         run: |
@@ -120,7 +120,7 @@ jobs:
       - name: Setup Node
         uses: actions/setup-node@v7
         with:
-          node-version: 20
+          node-version: 24
 
       - name: Install socket.io@${{ matrix.socket-io-version }} and start echo server
         env:
@@ -178,7 +178,7 @@ jobs:
       - name: Setup Node (echo server for platform smoke)
         uses: actions/setup-node@v7
         with:
-          node-version: 20
+          node-version: 24
 
       - name: Start echo server
         run: |
@@ -210,7 +210,7 @@ jobs:
       - name: Setup Node
         uses: actions/setup-node@v7
         with:
-          node-version: 20
+          node-version: 24
 
       - name: Start echo server
         run: |

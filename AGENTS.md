@@ -390,6 +390,13 @@ is confidently wrong. It cannot catch a paragraph describing behaviour you chang
 `guide/SUMMARY.md` is the table of contents; a page not listed there is not built. Build locally
 with `mdbook build` (output `guide-build/`, gitignored).
 
+CI installs the mdBook binary directly at a pinned version rather than using
+`peaceiris/actions-mdbook`: that action's released `@v2` tag still declares `using: node20`, and it
+has not cut a release since April 2024, so there is no tag to move to. Installing the binary also
+keeps third-party JavaScript out of a job holding `pages: write` and `id-token: write`, and pins an
+exact version — the action was used with `mdbook-version: latest`, which let an upstream release
+change the published docs with no change here.
+
 **`socketio/README.md` is deliberately short** — install, a quickstart, and links to the site. Usage
 prose belongs in `guide/`, not in the README, so the two cannot drift. It was 534 lines of
 duplicated content before the guide existed.
