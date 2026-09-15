@@ -132,6 +132,29 @@ jobs:
         run: |
           ./gradlew :socketio:jvmTest --tests "dev.adven.sockit.ServerCompatibilitySmokeTest"
 
+  # Fan-in for the matrix above. GitHub reports a matrix job as one check run per cell, named
+  # "server-compatibility (4.5.4, 0)" — the bare job name is NEVER reported. Requiring it as a
+  # status check makes every pull request wait forever on a context that cannot arrive.
+  #
+  # This job has a stable name, so the branch ruleset requires THIS instead of the cells. Adding or
+  # removing a matrix entry then needs no ruleset change.
+  #
+  # `if: always()` so it still reports when a cell fails or is skipped; the explicit result check is
+  # what actually fails the gate — `needs` alone would let a skipped matrix pass silently.
+  server-compatibility-gate:
+    runs-on: ubuntu-latest
+    needs: server-compatibility
+    if: always()
+    steps:
+      - name: Require every matrix cell to have succeeded
+        run: |
+          result="${{ needs.server-compatibility.result }}"
+          echo "server-compatibility matrix result: $result"
+          [ "$result" = "success" ] || {
+            echo "::error::server-compatibility did not succeed (result: $result)"
+            exit 1
+          }
+
   # macOS platform smoke — iOS simulator on every PR; Android device tests are manual (see job below).
   platform-smoke:
     runs-on: macos-latest
