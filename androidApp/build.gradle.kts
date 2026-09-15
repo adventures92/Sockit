@@ -56,7 +56,9 @@ android {
             "VERSION_NAME '$libraryVersion': minor and patch must be below 100 for versionCode"
         }
 
-        versionCode = vMajor * 10_000 + vMinor * 100 + vPatch
+        // coerceAtLeast(1): Android rejects versionCode 0, and 0.0.0 is a real input — CI's
+        // consumer-smoke job publishes with -PVERSION_NAME=0.0.0-ci to a throwaway coordinate.
+        versionCode = (vMajor * 10_000 + vMinor * 100 + vPatch).coerceAtLeast(1)
         versionName = libraryVersion
     }
     packaging {
