@@ -9,7 +9,7 @@ in-house Engine.IO v4 / Socket.IO v5 implementation and no third-party protocol 
 dependencies.
 
 ```kotlin
-implementation("io.github.adventures92:sockit:0.0.1")
+implementation("io.github.adventures92:sockit:0.0.2")
 ```
 
 ```kotlin

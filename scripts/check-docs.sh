@@ -10,7 +10,7 @@
 # Checked:
 #   1. every SUMMARY.md entry exists, and every guide page is listed in SUMMARY.md
 #   2. internal links resolve, and #anchors match a real heading
-#   3. version strings in the guide match VERSION_NAME
+#   3. install snippets in every user-facing .md match VERSION_NAME
 #   4. API identifiers named in the guide exist in the committed API dump
 #
 # Not checked: whether snippets compile. That needs them restructured as {{#include}} of real
@@ -71,13 +71,18 @@ done
 
 # ------------------------------------------------- 3. version strings
 
-stale="$(grep -rnoE 'io\.github\.adventures92:sockit:[0-9]+\.[0-9]+\.[0-9]+' "$GUIDE" \
+# Every user-facing markdown file, not just the guide — the root README quoted 0.0.1 for a whole
+# release because this check only looked at guide/. Excluded: docs/ (historical design records,
+# where old versions are the point) and CHANGELOG.md (lists every version by definition).
+stale="$(grep -rnoE 'io\.github\.adventures92:sockit:[0-9]+\.[0-9]+\.[0-9]+' \
+           --include='*.md' "$ROOT" 2>/dev/null \
+         | grep -vE "/(docs|build|guide-build|node_modules|\.git)/|/CHANGELOG\.md:" \
          | grep -v ":sockit:$VERSION" || true)"
 if [ -n "$stale" ]; then
-    bad "guide quotes a version other than VERSION_NAME ($VERSION)"
+    bad "a markdown file quotes a version other than VERSION_NAME ($VERSION)"
     echo "$stale" | sed "s|$ROOT/||" | sed 's/^/    /'
 else
-    ok "install snippets all quote $VERSION"
+    ok "every install snippet across the repo quotes $VERSION"
 fi
 
 # ------------------------------------------------- 4. API identifiers exist
