@@ -76,9 +76,20 @@ jobs:
         with:
           node-version: 20
 
-      - name: Install echo-server dependencies
+      # jvmTest spawns its own server via SocketTestServer, but the iOS simulator suite cannot fork
+      # a process — PlatformEchoServer only probes localhost:3000 and skips/fails if nothing is
+      # listening. So the server has to be started here, exactly as socketio-ci's platform-smoke does.
+      - name: Start echo server
         working-directory: socketio/src/jvmTest/resources
-        run: npm ci
+        run: |
+          npm ci
+          node socket-server.js &
+          for i in $(seq 1 20); do
+            curl -sf "http://localhost:3000/socket.io/?EIO=4&transport=polling" >/dev/null && break
+            sleep 1
+          done
+          curl -sf "http://localhost:3000/socket.io/?EIO=4&transport=polling" >/dev/null \
+            || { echo "::error::echo server did not come up on :3000"; exit 1; }
 
       - name: Static gates
         run: ./gradlew spotlessCheck :socketio:detekt :socketio:apiCheck
