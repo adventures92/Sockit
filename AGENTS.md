@@ -344,6 +344,22 @@ subsequent versions appear the next day. To skip the wait, file an index request
 Nothing in the build needs to change for this — the requirement is a side effect of publishing a
 correct KMP POM, which `checkPomFileFor<Publication>Publication` already enforces.
 
+## Agent tooling
+
+`.agents/` is the vendor-neutral home for agent skills, alongside this file. `.claude/skills` is a
+**committed symlink** to `.agents/skills` — git stores it as mode `120000`, so it resolves on clone
+with no bootstrap script and no git hook (hooks live in `.git/hooks`, which git does not
+distribute). See [`.agents/README.md`](.agents/README.md).
+
+| Skill | Purpose |
+|-------|---------|
+| [`release`](.agents/skills/release/SKILL.md) | Cut a release — pre-flight, tag, and verify the artifact landed on Maven Central |
+
+Skills are an **authoring aid, never a pipeline dependency**. No workflow may require an agent to
+run: a release must be reproducible by anyone holding the secrets, so a fork with no agent access
+still publishes correctly. Generated release notes are excluded for the same reason — the
+`CHANGELOG.md` entry is curated per pull request and is what `release.yml` extracts.
+
 ## Contributor-facing configuration
 
 | File | Purpose |
