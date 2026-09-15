@@ -1,0 +1,26 @@
+[book]
+title = "Sockit"
+authors = ["adventures92"]
+description = "Coroutine-first Socket.IO v5 / Engine.IO v4 client for Kotlin Multiplatform — Android, iOS, JVM"
+src = "guide"
+language = "en"
+
+[build]
+# Not `book/`: that collides with nothing today, but `build/` is gitignored wholesale and
+# `guide-build/` makes it obvious which source produced it.
+build-dir = "guide-build"
+
+[output.html]
+default-theme = "rust"
+preferred-dark-theme = "ayu"
+git-repository-url = "https://github.com/adventures92/Sockit"
+edit-url-template = "https://github.com/adventures92/Sockit/edit/main/{path}"
+# The Dokka API reference is deployed alongside the book at /api/ by docs.yml.
+additional-css = ["guide/theme/sockit.css"]
+
+[output.html.fold]
+enable = true
+level = 1
+
+[output.html.print]
+enable = false

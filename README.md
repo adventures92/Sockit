@@ -29,7 +29,7 @@ socket.openAwait()
 socket.emit(Subscribe(buildJsonObject { put("pair", "BTC-INR") }))
 ```
 
-**📖 [Full documentation → `socketio/README.md`](./socketio/README.md)**
+**📖 [Documentation](https://adventures92.github.io/Sockit/)** · **[API reference](https://adventures92.github.io/Sockit/api/)**
 
 ## Why
 

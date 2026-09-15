@@ -43,13 +43,33 @@ jobs:
 
       - uses: gradle/actions/setup-gradle@v4
 
+      # The narrative guide is the site root; the generated reference is nested under /api/.
+      # Neither replaces the other — the guide teaches, the reference is exhaustive.
+      - name: Install mdBook
+        uses: peaceiris/actions-mdbook@v2
+        with:
+          mdbook-version: latest
+
+      - name: Build the guide
+        run: mdbook build
+
       # Must be the Dokka V2 task — the V1 helper "dokkaHtml" is disabled and emits nothing.
       - name: Generate API reference
         run: ./gradlew :socketio:dokkaGeneratePublicationHtml
 
+      - name: Assemble the site
+        run: |
+          mkdir -p site site/api
+          cp -R guide-build/. site/
+          cp -R socketio/build/dokka/html/. site/api/
+          test -f site/index.html     || { echo "::error::guide produced no index.html"; exit 1; }
+          test -f site/api/index.html || { echo "::error::Dokka produced no index.html"; exit 1; }
+          echo "guide pages: $(find site -maxdepth 1 -name '*.html' | wc -l)"
+          echo "api pages:   $(find site/api -name '*.html' | wc -l)"
+
       - uses: actions/upload-pages-artifact@v3
         with:
-          path: socketio/build/dokka/html
+          path: site
 
   deploy:
     runs-on: ubuntu-latest

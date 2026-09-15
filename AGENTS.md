@@ -360,6 +360,25 @@ run: a release must be reproducible by anyone holding the secrets, so a fork wit
 still publishes correctly. Generated release notes are excluded for the same reason — the
 `CHANGELOG.md` entry is curated per pull request and is what `release.yml` extracts.
 
+## Documentation
+
+Two artefacts, published together to GitHub Pages by `docs.yml` on every release.
+
+| | Source | Published at | Purpose |
+|---|---|---|---|
+| Guide | `guide/` (mdBook, `book.toml`) | `/` | Narrative — teaches how to use the library |
+| API reference | Dokka from `api/` KDoc | `/api/` | Generated — exhaustive, cannot drift |
+
+`guide/SUMMARY.md` is the table of contents; a page not listed there is not built. Build locally
+with `mdbook build` (output `guide-build/`, gitignored).
+
+**`socketio/README.md` is deliberately short** — install, a quickstart, and links to the site. Usage
+prose belongs in `guide/`, not in the README, so the two cannot drift. It was 534 lines of
+duplicated content before the guide existed.
+
+Not to be confused with `docs/`, which is the internal design record (HLD, LLD, historical
+execution logs) and is not published.
+
 ## Contributor-facing configuration
 
 | File | Purpose |
