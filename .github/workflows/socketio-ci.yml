@@ -20,7 +20,7 @@ jobs:
           java-version: 21
 
       # Dependency + build caching, and Gradle wrapper checksum validation.
-      - uses: gradle/actions/setup-gradle@v4
+      - uses: gradle/actions/setup-gradle@v6
 
       - name: Setup Node (echo server for jvmTest)
         uses: actions/setup-node@v4
@@ -105,7 +105,7 @@ jobs:
           java-version: 21
 
       # Dependency + build caching, and Gradle wrapper checksum validation.
-      - uses: gradle/actions/setup-gradle@v4
+      - uses: gradle/actions/setup-gradle@v6
 
       - name: Setup Node
         uses: actions/setup-node@v4
@@ -140,7 +140,7 @@ jobs:
           java-version: 21
 
       # Dependency + build caching, and Gradle wrapper checksum validation.
-      - uses: gradle/actions/setup-gradle@v4
+      - uses: gradle/actions/setup-gradle@v6
 
       - name: Setup Node (echo server for platform smoke)
         uses: actions/setup-node@v4
@@ -172,7 +172,7 @@ jobs:
           java-version: 21
 
       # Dependency + build caching, and Gradle wrapper checksum validation.
-      - uses: gradle/actions/setup-gradle@v4
+      - uses: gradle/actions/setup-gradle@v6
 
       - name: Setup Node
         uses: actions/setup-node@v4
@@ -203,7 +203,7 @@ jobs:
           distribution: temurin
           java-version: 21
 
-      - uses: gradle/actions/setup-gradle@v4
+      - uses: gradle/actions/setup-gradle@v6
 
       - name: Publish :socketio to mavenLocal
         run: >

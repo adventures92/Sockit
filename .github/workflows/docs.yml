@@ -28,7 +28,7 @@ jobs:
           distribution: temurin
           java-version: 21
 
-      - uses: gradle/actions/setup-gradle@v4
+      - uses: gradle/actions/setup-gradle@v6
 
       # Must be the Dokka V2 task — the V1 helper "dokkaHtml" is disabled and emits nothing.
       - name: Generate API reference
