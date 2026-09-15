@@ -1,0 +1,92 @@
+name: Bug report
+description: Something behaves differently from what the documentation says.
+labels: ["bug", "needs-triage"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Connection bugs are usually reproducible from the wire behaviour, so the transport,
+        server version and the `SocketError` you observed matter more than anything else.
+
+  - type: textarea
+    id: what-happened
+    attributes:
+      label: What happened
+      description: What you expected, and what happened instead.
+    validations:
+      required: true
+
+  - type: textarea
+    id: reproduction
+    attributes:
+      label: Reproduction
+      description: The smallest `socketOptions { }` and call sequence that shows the problem.
+      render: kotlin
+      placeholder: |
+        val client = SocketClient.connect(
+            "https://example.com",
+            socketOptions {
+                transports(Transports.WEBSOCKET)
+            },
+        )
+    validations:
+      required: true
+
+  - type: input
+    id: version
+    attributes:
+      label: Sockit version
+      placeholder: "0.0.1"
+    validations:
+      required: true
+
+  - type: dropdown
+    id: platform
+    attributes:
+      label: Platform
+      multiple: true
+      options:
+        - Android
+        - iOS (device)
+        - iOS (simulator)
+        - JVM
+    validations:
+      required: true
+
+  - type: dropdown
+    id: transport
+    attributes:
+      label: Transport
+      options:
+        - websocket only
+        - polling only
+        - polling with upgrade (default)
+        - not sure
+    validations:
+      required: true
+
+  - type: input
+    id: server
+    attributes:
+      label: Server
+      description: The `socket.io` server version, or another implementation.
+      placeholder: "socket.io 4.8.1"
+
+  - type: textarea
+    id: error
+    attributes:
+      label: SocketError / ConnectionState observed
+      description: >
+        What came through `errors` or `connectionState`, plus any stack trace. Logs from
+        `Logger.essential { }` are sanitized and safe to paste — please redact anything else.
+      render: text
+
+  - type: checkboxes
+    id: checks
+    attributes:
+      label: Before submitting
+      options:
+        - label: I checked this against the latest released version
+          required: true
+        - label: I have removed tokens, URLs and payloads from anything I pasted
+          required: true

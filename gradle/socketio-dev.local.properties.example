@@ -1,0 +1,10 @@
+# Local dev only — copy to socketio-dev.local.properties (gitignored)
+# or run: ./scripts/toggle-socketio-internal-logging.sh
+#
+# When true, :socketio internal wire/FSM logs are compiled in:
+#   Android → Logcat (adb logcat)
+#   iOS     → Xcode console (NSLog)
+#   JVM     → Gradle test stdout (println)
+#
+# CLI override: ./gradlew -Psocketio.internalLogging=false ...
+socketio.internalLogging=false

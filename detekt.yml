@@ -1,0 +1,72 @@
+build:
+  maxIssues: 0
+  excludeCorrectable: false
+
+config:
+  validation: true
+  warningsAsErrors: false
+
+processors:
+  active: true
+
+console-reports:
+  active: true
+
+output-reports:
+  active: true
+
+complexity:
+  ComplexCondition:
+    active: true
+    threshold: 6
+  CyclomaticComplexMethod:
+    active: true
+    threshold: 25
+  LongParameterList:
+    active: true
+    functionThreshold: 12
+    constructorThreshold: 20
+  TooManyFunctions:
+    active: true
+    thresholdInFiles: 40
+    thresholdInClasses: 40
+    thresholdInInterfaces: 12
+    thresholdInObjects: 20
+    thresholdInEnums: 20
+
+coroutines:
+  GlobalCoroutineUsage:
+    active: true
+  InjectDispatcher:
+    active: true
+
+naming:
+  FunctionNaming:
+    active: true
+  MatchingDeclarationName:
+    active: true
+
+style:
+  LoopWithTooManyJumpStatements:
+    active: false
+  MagicNumber:
+    active: false
+  MaxLineLength:
+    active: true
+    maxLineLength: 160
+  ReturnCount:
+    active: true
+    max: 5
+  ThrowsCount:
+    active: true
+    max: 5
+  UnusedParameter:
+    active: true
+  UseRequire:
+    active: false
+  WildcardImport:
+    active: true
+
+exceptions:
+  TooGenericExceptionCaught:
+    active: false

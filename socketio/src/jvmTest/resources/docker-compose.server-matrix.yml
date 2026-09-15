@@ -1,0 +1,55 @@
+# Local server-version matrix for ServerCompatibilitySmokeTest.
+#
+# Usage (from this directory):
+#   docker compose -f docker-compose.server-matrix.yml up -d
+#   SOCKET_IO_SERVER_VERSION=4.6.2 SOCKET_IO_RECOVERY=1 \
+#     node socket-server.js   # or point tests at mapped port
+#   docker compose -f docker-compose.server-matrix.yml down
+#
+# CI uses the GitHub Actions matrix job instead (npm install socket.io@<version>).
+
+services:
+  socket-io-4-5-4:
+    image: node:20-alpine
+    working_dir: /app
+    volumes:
+      - .:/app
+    command: sh -c "npm install socket.io@4.5.4 --no-save && node socket-server.js /"
+    environment:
+      PORT: "3001"
+    ports:
+      - "3001:3001"
+
+  socket-io-4-6-2:
+    image: node:20-alpine
+    working_dir: /app
+    volumes:
+      - .:/app
+    command: sh -c "npm install socket.io@4.6.2 --no-save && RECOVERY=1 node socket-server.js /"
+    environment:
+      PORT: "3002"
+      RECOVERY: "1"
+    ports:
+      - "3002:3002"
+
+  socket-io-4-7-5:
+    image: node:20-alpine
+    working_dir: /app
+    volumes:
+      - .:/app
+    command: sh -c "npm install socket.io@4.7.5 --no-save && node socket-server.js /"
+    environment:
+      PORT: "3003"
+    ports:
+      - "3003:3003"
+
+  socket-io-4-8-1:
+    image: node:20-alpine
+    working_dir: /app
+    volumes:
+      - .:/app
+    command: sh -c "npm install socket.io@4.8.1 --no-save && node socket-server.js /"
+    environment:
+      PORT: "3004"
+    ports:
+      - "3004:3004"

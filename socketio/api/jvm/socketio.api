@@ -1,0 +1,381 @@
+public abstract interface class dev/adven/sockit/api/Ack {
+	public abstract fun send ([Ljava/lang/Object;)V
+}
+
+public abstract interface class dev/adven/sockit/api/ConnectionState {
+}
+
+public final class dev/adven/sockit/api/ConnectionState$Connected : dev/adven/sockit/api/ConnectionState {
+	public static final field INSTANCE Ldev/adven/sockit/api/ConnectionState$Connected;
+	public fun equals (Ljava/lang/Object;)Z
+	public fun hashCode ()I
+	public fun toString ()Ljava/lang/String;
+}
+
+public final class dev/adven/sockit/api/ConnectionState$Connecting : dev/adven/sockit/api/ConnectionState {
+	public static final field INSTANCE Ldev/adven/sockit/api/ConnectionState$Connecting;
+	public fun equals (Ljava/lang/Object;)Z
+	public fun hashCode ()I
+	public fun toString ()Ljava/lang/String;
+}
+
+public final class dev/adven/sockit/api/ConnectionState$Disconnected : dev/adven/sockit/api/ConnectionState {
+	public static final field INSTANCE Ldev/adven/sockit/api/ConnectionState$Disconnected;
+	public fun equals (Ljava/lang/Object;)Z
+	public fun hashCode ()I
+	public fun toString ()Ljava/lang/String;
+}
+
+public final class dev/adven/sockit/api/ConnectionState$Failed : dev/adven/sockit/api/ConnectionState {
+	public fun <init> (Ldev/adven/sockit/api/SocketError;)V
+	public final fun component1 ()Ldev/adven/sockit/api/SocketError;
+	public final fun copy (Ldev/adven/sockit/api/SocketError;)Ldev/adven/sockit/api/ConnectionState$Failed;
+	public static synthetic fun copy$default (Ldev/adven/sockit/api/ConnectionState$Failed;Ldev/adven/sockit/api/SocketError;ILjava/lang/Object;)Ldev/adven/sockit/api/ConnectionState$Failed;
+	public fun equals (Ljava/lang/Object;)Z
+	public final fun getError ()Ldev/adven/sockit/api/SocketError;
+	public fun hashCode ()I
+	public fun toString ()Ljava/lang/String;
+}
+
+public final class dev/adven/sockit/api/ConnectionState$Reconnecting : dev/adven/sockit/api/ConnectionState {
+	public fun <init> (I)V
+	public final fun component1 ()I
+	public final fun copy (I)Ldev/adven/sockit/api/ConnectionState$Reconnecting;
+	public static synthetic fun copy$default (Ldev/adven/sockit/api/ConnectionState$Reconnecting;IILjava/lang/Object;)Ldev/adven/sockit/api/ConnectionState$Reconnecting;
+	public fun equals (Ljava/lang/Object;)Z
+	public final fun getAttempt ()I
+	public fun hashCode ()I
+	public fun toString ()Ljava/lang/String;
+}
+
+public final class dev/adven/sockit/api/EventBufferConfig {
+	public fun <init> ()V
+	public fun <init> (ILdev/adven/sockit/api/EventBufferOverflow;)V
+	public synthetic fun <init> (ILdev/adven/sockit/api/EventBufferOverflow;ILkotlin/jvm/internal/DefaultConstructorMarker;)V
+	public final fun component1 ()I
+	public final fun component2 ()Ldev/adven/sockit/api/EventBufferOverflow;
+	public final fun copy (ILdev/adven/sockit/api/EventBufferOverflow;)Ldev/adven/sockit/api/EventBufferConfig;
+	public static synthetic fun copy$default (Ldev/adven/sockit/api/EventBufferConfig;ILdev/adven/sockit/api/EventBufferOverflow;ILjava/lang/Object;)Ldev/adven/sockit/api/EventBufferConfig;
+	public fun equals (Ljava/lang/Object;)Z
+	public final fun getCapacity ()I
+	public final fun getOverflow ()Ldev/adven/sockit/api/EventBufferOverflow;
+	public fun hashCode ()I
+	public fun toString ()Ljava/lang/String;
+}
+
+public final class dev/adven/sockit/api/EventBufferOverflow : java/lang/Enum {
+	public static final field DROP_LATEST Ldev/adven/sockit/api/EventBufferOverflow;
+	public static final field DROP_OLDEST Ldev/adven/sockit/api/EventBufferOverflow;
+	public static final field SUSPEND Ldev/adven/sockit/api/EventBufferOverflow;
+	public static fun getEntries ()Lkotlin/enums/EnumEntries;
+	public static fun valueOf (Ljava/lang/String;)Ldev/adven/sockit/api/EventBufferOverflow;
+	public static fun values ()[Ldev/adven/sockit/api/EventBufferOverflow;
+}
+
+public abstract interface class dev/adven/sockit/api/Logger {
+	public static final field NoOp Ldev/adven/sockit/api/Logger$NoOp;
+	public static final field TAG Ljava/lang/String;
+	public abstract fun debug (Ljava/lang/String;Ljava/lang/String;)V
+	public abstract fun error (Ljava/lang/String;Ljava/lang/String;Ljava/lang/Throwable;)V
+	public static synthetic fun error$default (Ldev/adven/sockit/api/Logger;Ljava/lang/String;Ljava/lang/String;Ljava/lang/Throwable;ILjava/lang/Object;)V
+	public abstract fun info (Ljava/lang/String;Ljava/lang/String;)V
+}
+
+public final class dev/adven/sockit/api/Logger$DefaultImpls {
+	public static synthetic fun error$default (Ldev/adven/sockit/api/Logger;Ljava/lang/String;Ljava/lang/String;Ljava/lang/Throwable;ILjava/lang/Object;)V
+}
+
+public final class dev/adven/sockit/api/Logger$NoOp : dev/adven/sockit/api/Logger {
+	public static final field TAG Ljava/lang/String;
+	public fun debug (Ljava/lang/String;Ljava/lang/String;)V
+	public fun error (Ljava/lang/String;Ljava/lang/String;Ljava/lang/Throwable;)V
+	public final fun essential (Lkotlin/jvm/functions/Function4;)Ldev/adven/sockit/api/Logger;
+	public fun info (Ljava/lang/String;Ljava/lang/String;)V
+}
+
+public abstract interface class dev/adven/sockit/api/NamespaceSocket {
+	public abstract fun close ()V
+	public abstract fun emit (Ldev/adven/sockit/api/StreamCommand;)V
+	public abstract fun emit (Ljava/lang/String;[Ljava/lang/Object;)V
+	public abstract fun emitAwait (Ldev/adven/sockit/api/StreamCommand;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public abstract fun emitAwait (Ljava/lang/String;[Ljava/lang/Object;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public abstract fun emitWithAck (Ljava/lang/String;[Ljava/lang/Object;)Lkotlinx/coroutines/flow/Flow;
+	public abstract fun events (Ljava/lang/String;)Lkotlinx/coroutines/flow/Flow;
+	public abstract fun getConnectionState ()Lkotlinx/coroutines/flow/StateFlow;
+	public abstract fun getErrors ()Lkotlinx/coroutines/flow/Flow;
+	public abstract fun getId ()Lkotlinx/coroutines/flow/StateFlow;
+	public abstract fun isConnected ()Z
+	public abstract fun isDisconnected ()Z
+	public abstract fun open ()V
+	public abstract fun openAwait (Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+}
+
+public final class dev/adven/sockit/api/SocketClient {
+	public static final field Companion Ldev/adven/sockit/api/SocketClient$Companion;
+	public final fun close ()V
+	public final fun closeAwait (Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public final fun emitAwait (Ljava/lang/String;Ldev/adven/sockit/api/StreamCommand;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public final fun emitAwait (Ljava/lang/String;Ljava/lang/String;[Ljava/lang/Object;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public static synthetic fun emitAwait$default (Ldev/adven/sockit/api/SocketClient;Ljava/lang/String;Ldev/adven/sockit/api/StreamCommand;Lkotlin/coroutines/Continuation;ILjava/lang/Object;)Ljava/lang/Object;
+	public static synthetic fun emitAwait$default (Ldev/adven/sockit/api/SocketClient;Ljava/lang/String;Ljava/lang/String;[Ljava/lang/Object;Lkotlin/coroutines/Continuation;ILjava/lang/Object;)Ljava/lang/Object;
+	public final fun getConnectionState ()Lkotlinx/coroutines/flow/StateFlow;
+	public final fun getErrors ()Lkotlinx/coroutines/flow/Flow;
+	public final fun isConnected ()Z
+	public final fun isDisconnected ()Z
+	public final fun namespace (Ljava/lang/String;)Ldev/adven/sockit/api/NamespaceSocket;
+	public static synthetic fun namespace$default (Ldev/adven/sockit/api/SocketClient;Ljava/lang/String;ILjava/lang/Object;)Ldev/adven/sockit/api/NamespaceSocket;
+	public final fun openAwait (Ljava/lang/String;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public static synthetic fun openAwait$default (Ldev/adven/sockit/api/SocketClient;Ljava/lang/String;Lkotlin/coroutines/Continuation;ILjava/lang/Object;)Ljava/lang/Object;
+	public final fun pauseReconnect ()V
+	public final fun resumeReconnect ()V
+}
+
+public final class dev/adven/sockit/api/SocketClient$Companion {
+	public final fun connect (Ljava/lang/String;Ldev/adven/sockit/api/SocketOptions;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public static synthetic fun connect$default (Ldev/adven/sockit/api/SocketClient$Companion;Ljava/lang/String;Ldev/adven/sockit/api/SocketOptions;Lkotlin/coroutines/Continuation;ILjava/lang/Object;)Ljava/lang/Object;
+}
+
+public final class dev/adven/sockit/api/SocketCommand : dev/adven/sockit/api/StreamCommand {
+	public fun <init> (Ljava/lang/String;Lkotlinx/serialization/json/JsonElement;)V
+	public final fun component1 ()Ljava/lang/String;
+	public final fun component2 ()Lkotlinx/serialization/json/JsonElement;
+	public final fun copy (Ljava/lang/String;Lkotlinx/serialization/json/JsonElement;)Ldev/adven/sockit/api/SocketCommand;
+	public static synthetic fun copy$default (Ldev/adven/sockit/api/SocketCommand;Ljava/lang/String;Lkotlinx/serialization/json/JsonElement;ILjava/lang/Object;)Ldev/adven/sockit/api/SocketCommand;
+	public fun equals (Ljava/lang/Object;)Z
+	public fun getEventName ()Ljava/lang/String;
+	public fun getPayload ()Lkotlinx/serialization/json/JsonElement;
+	public fun hashCode ()I
+	public fun toString ()Ljava/lang/String;
+}
+
+public abstract interface class dev/adven/sockit/api/SocketError {
+}
+
+public final class dev/adven/sockit/api/SocketError$ConnectError : dev/adven/sockit/api/SocketError {
+	public fun <init> (Ljava/lang/String;Ljava/lang/String;)V
+	public synthetic fun <init> (Ljava/lang/String;Ljava/lang/String;ILkotlin/jvm/internal/DefaultConstructorMarker;)V
+	public final fun component1 ()Ljava/lang/String;
+	public final fun component2 ()Ljava/lang/String;
+	public final fun copy (Ljava/lang/String;Ljava/lang/String;)Ldev/adven/sockit/api/SocketError$ConnectError;
+	public static synthetic fun copy$default (Ldev/adven/sockit/api/SocketError$ConnectError;Ljava/lang/String;Ljava/lang/String;ILjava/lang/Object;)Ldev/adven/sockit/api/SocketError$ConnectError;
+	public fun equals (Ljava/lang/Object;)Z
+	public final fun getData ()Ljava/lang/String;
+	public final fun getMessage ()Ljava/lang/String;
+	public fun hashCode ()I
+	public fun toString ()Ljava/lang/String;
+}
+
+public final class dev/adven/sockit/api/SocketError$ParseError : dev/adven/sockit/api/SocketError {
+	public fun <init> (Ljava/lang/String;)V
+	public final fun component1 ()Ljava/lang/String;
+	public final fun copy (Ljava/lang/String;)Ldev/adven/sockit/api/SocketError$ParseError;
+	public static synthetic fun copy$default (Ldev/adven/sockit/api/SocketError$ParseError;Ljava/lang/String;ILjava/lang/Object;)Ldev/adven/sockit/api/SocketError$ParseError;
+	public fun equals (Ljava/lang/Object;)Z
+	public final fun getRaw ()Ljava/lang/String;
+	public fun hashCode ()I
+	public fun toString ()Ljava/lang/String;
+}
+
+public final class dev/adven/sockit/api/SocketError$PingTimeout : dev/adven/sockit/api/SocketError {
+	public static final field INSTANCE Ldev/adven/sockit/api/SocketError$PingTimeout;
+	public fun equals (Ljava/lang/Object;)Z
+	public fun hashCode ()I
+	public fun toString ()Ljava/lang/String;
+}
+
+public final class dev/adven/sockit/api/SocketError$SendFailed : dev/adven/sockit/api/SocketError {
+	public fun <init> (Ljava/lang/Throwable;)V
+	public final fun component1 ()Ljava/lang/Throwable;
+	public final fun copy (Ljava/lang/Throwable;)Ldev/adven/sockit/api/SocketError$SendFailed;
+	public static synthetic fun copy$default (Ldev/adven/sockit/api/SocketError$SendFailed;Ljava/lang/Throwable;ILjava/lang/Object;)Ldev/adven/sockit/api/SocketError$SendFailed;
+	public fun equals (Ljava/lang/Object;)Z
+	public final fun getCause ()Ljava/lang/Throwable;
+	public fun hashCode ()I
+	public fun toString ()Ljava/lang/String;
+}
+
+public final class dev/adven/sockit/api/SocketError$Timeout : dev/adven/sockit/api/SocketError {
+	public fun <init> (Ljava/lang/String;)V
+	public final fun component1 ()Ljava/lang/String;
+	public final fun copy (Ljava/lang/String;)Ldev/adven/sockit/api/SocketError$Timeout;
+	public static synthetic fun copy$default (Ldev/adven/sockit/api/SocketError$Timeout;Ljava/lang/String;ILjava/lang/Object;)Ldev/adven/sockit/api/SocketError$Timeout;
+	public fun equals (Ljava/lang/Object;)Z
+	public final fun getPhase ()Ljava/lang/String;
+	public fun hashCode ()I
+	public fun toString ()Ljava/lang/String;
+}
+
+public final class dev/adven/sockit/api/SocketError$TlsFailure : dev/adven/sockit/api/SocketError {
+	public fun <init> (Ljava/lang/Throwable;)V
+	public final fun component1 ()Ljava/lang/Throwable;
+	public final fun copy (Ljava/lang/Throwable;)Ldev/adven/sockit/api/SocketError$TlsFailure;
+	public static synthetic fun copy$default (Ldev/adven/sockit/api/SocketError$TlsFailure;Ljava/lang/Throwable;ILjava/lang/Object;)Ldev/adven/sockit/api/SocketError$TlsFailure;
+	public fun equals (Ljava/lang/Object;)Z
+	public final fun getCause ()Ljava/lang/Throwable;
+	public fun hashCode ()I
+	public fun toString ()Ljava/lang/String;
+}
+
+public final class dev/adven/sockit/api/SocketError$TransportClosed : dev/adven/sockit/api/SocketError {
+	public fun <init> (Ljava/lang/String;)V
+	public final fun component1 ()Ljava/lang/String;
+	public final fun copy (Ljava/lang/String;)Ldev/adven/sockit/api/SocketError$TransportClosed;
+	public static synthetic fun copy$default (Ldev/adven/sockit/api/SocketError$TransportClosed;Ljava/lang/String;ILjava/lang/Object;)Ldev/adven/sockit/api/SocketError$TransportClosed;
+	public fun equals (Ljava/lang/Object;)Z
+	public final fun getReason ()Ljava/lang/String;
+	public fun hashCode ()I
+	public fun toString ()Ljava/lang/String;
+}
+
+public final class dev/adven/sockit/api/SocketEvent {
+	public fun <init> (Ljava/lang/String;Ljava/util/List;)V
+	public final fun component1 ()Ljava/lang/String;
+	public final fun component2 ()Ljava/util/List;
+	public final fun copy (Ljava/lang/String;Ljava/util/List;)Ldev/adven/sockit/api/SocketEvent;
+	public static synthetic fun copy$default (Ldev/adven/sockit/api/SocketEvent;Ljava/lang/String;Ljava/util/List;ILjava/lang/Object;)Ldev/adven/sockit/api/SocketEvent;
+	public fun equals (Ljava/lang/Object;)Z
+	public final fun getAck ()Ldev/adven/sockit/api/Ack;
+	public final fun getArgs ()Ljava/util/List;
+	public final fun getName ()Ljava/lang/String;
+	public fun hashCode ()I
+	public fun toString ()Ljava/lang/String;
+}
+
+public abstract class dev/adven/sockit/api/SocketException : java/lang/Exception {
+	public synthetic fun <init> (Ldev/adven/sockit/api/SocketError;Lkotlin/jvm/internal/DefaultConstructorMarker;)V
+	public final fun getError ()Ldev/adven/sockit/api/SocketError;
+}
+
+public final class dev/adven/sockit/api/SocketException$ConnectionFailed : dev/adven/sockit/api/SocketException {
+}
+
+public final class dev/adven/sockit/api/SocketException$SendFailed : dev/adven/sockit/api/SocketException {
+}
+
+public final class dev/adven/sockit/api/SocketOptions {
+	public final fun getAckTimeoutMs ()J
+	public final fun getAuth ()Lkotlinx/serialization/json/JsonObject;
+	public final fun getEventBuffer ()Ldev/adven/sockit/api/EventBufferConfig;
+	public final fun getExperimentalWebTransport ()Z
+	public final fun getExtraHeaders ()Ljava/util/Map;
+	public final fun getForceNew ()Z
+	public final fun getHttpClient ()Lio/ktor/client/HttpClient;
+	public final fun getLogger ()Ldev/adven/sockit/api/Logger;
+	public final fun getMultiplex ()Z
+	public final fun getPath ()Ljava/lang/String;
+	public final fun getRandomizationFactor ()D
+	public final fun getReconnection ()Z
+	public final fun getReconnectionAttempts ()I
+	public final fun getReconnectionDelayMaxMs ()J
+	public final fun getReconnectionDelayMs ()J
+	public final fun getTimeoutMs ()J
+	public final fun getTransports ()Ljava/util/List;
+	public final fun getTrustAllCerts ()Z
+	public final fun getUpgrade ()Z
+}
+
+public final class dev/adven/sockit/api/SocketOptionsBuilder {
+	public fun <init> ()V
+	public final fun auth (Lkotlin/jvm/functions/Function1;)V
+	public final fun extraHeaders (Lkotlin/jvm/functions/Function1;)V
+	public final fun getAckTimeoutMs ()J
+	public final fun getEventBufferCapacity ()I
+	public final fun getEventBufferOverflow ()Ldev/adven/sockit/api/EventBufferOverflow;
+	public final fun getExperimentalWebTransport ()Z
+	public final fun getForceNew ()Z
+	public final fun getHttpClient ()Lio/ktor/client/HttpClient;
+	public final fun getLogger ()Ldev/adven/sockit/api/Logger;
+	public final fun getMultiplex ()Z
+	public final fun getPath ()Ljava/lang/String;
+	public final fun getRandomizationFactor ()D
+	public final fun getReconnection ()Z
+	public final fun getReconnectionAttempts ()I
+	public final fun getReconnectionDelayMaxMs ()J
+	public final fun getReconnectionDelayMs ()J
+	public final fun getTimeoutMs ()J
+	public final fun getTrustAllCerts ()Z
+	public final fun getUpgrade ()Z
+	public final fun setAckTimeoutMs (J)V
+	public final fun setEventBufferCapacity (I)V
+	public final fun setEventBufferOverflow (Ldev/adven/sockit/api/EventBufferOverflow;)V
+	public final fun setExperimentalWebTransport (Z)V
+	public final fun setForceNew (Z)V
+	public final fun setHttpClient (Lio/ktor/client/HttpClient;)V
+	public final fun setLogger (Ldev/adven/sockit/api/Logger;)V
+	public final fun setMultiplex (Z)V
+	public final fun setPath (Ljava/lang/String;)V
+	public final fun setRandomizationFactor (D)V
+	public final fun setReconnection (Z)V
+	public final fun setReconnectionAttempts (I)V
+	public final fun setReconnectionDelayMaxMs (J)V
+	public final fun setReconnectionDelayMs (J)V
+	public final fun setTimeoutMs (J)V
+	public final fun setTrustAllCerts (Z)V
+	public final fun setUpgrade (Z)V
+	public final fun transports ([Ljava/lang/String;)V
+}
+
+public final class dev/adven/sockit/api/SocketOptionsKt {
+	public static final fun socketOptions (Lkotlin/jvm/functions/Function1;)Ldev/adven/sockit/api/SocketOptions;
+}
+
+public abstract interface class dev/adven/sockit/api/SocketPayload {
+}
+
+public final class dev/adven/sockit/api/SocketPayload$Binary : dev/adven/sockit/api/SocketPayload {
+	public fun <init> (Lkotlinx/io/bytestring/ByteString;)V
+	public final fun component1 ()Lkotlinx/io/bytestring/ByteString;
+	public final fun copy (Lkotlinx/io/bytestring/ByteString;)Ldev/adven/sockit/api/SocketPayload$Binary;
+	public static synthetic fun copy$default (Ldev/adven/sockit/api/SocketPayload$Binary;Lkotlinx/io/bytestring/ByteString;ILjava/lang/Object;)Ldev/adven/sockit/api/SocketPayload$Binary;
+	public fun equals (Ljava/lang/Object;)Z
+	public final fun getBytes ()Lkotlinx/io/bytestring/ByteString;
+	public fun hashCode ()I
+	public fun toString ()Ljava/lang/String;
+}
+
+public final class dev/adven/sockit/api/SocketPayload$Json : dev/adven/sockit/api/SocketPayload {
+	public fun <init> (Lkotlinx/serialization/json/JsonElement;)V
+	public final fun component1 ()Lkotlinx/serialization/json/JsonElement;
+	public final fun copy (Lkotlinx/serialization/json/JsonElement;)Ldev/adven/sockit/api/SocketPayload$Json;
+	public static synthetic fun copy$default (Ldev/adven/sockit/api/SocketPayload$Json;Lkotlinx/serialization/json/JsonElement;ILjava/lang/Object;)Ldev/adven/sockit/api/SocketPayload$Json;
+	public fun equals (Ljava/lang/Object;)Z
+	public final fun getElement ()Lkotlinx/serialization/json/JsonElement;
+	public fun hashCode ()I
+	public fun toString ()Ljava/lang/String;
+}
+
+public final class dev/adven/sockit/api/SocketPayload$Text : dev/adven/sockit/api/SocketPayload {
+	public fun <init> (Ljava/lang/String;)V
+	public final fun component1 ()Ljava/lang/String;
+	public final fun copy (Ljava/lang/String;)Ldev/adven/sockit/api/SocketPayload$Text;
+	public static synthetic fun copy$default (Ldev/adven/sockit/api/SocketPayload$Text;Ljava/lang/String;ILjava/lang/Object;)Ldev/adven/sockit/api/SocketPayload$Text;
+	public fun equals (Ljava/lang/Object;)Z
+	public final fun getValue ()Ljava/lang/String;
+	public fun hashCode ()I
+	public fun toString ()Ljava/lang/String;
+}
+
+public abstract interface class dev/adven/sockit/api/StreamCommand {
+	public abstract fun getEventName ()Ljava/lang/String;
+	public abstract fun getPayload ()Lkotlinx/serialization/json/JsonElement;
+}
+
+public final class dev/adven/sockit/api/Subscribe : dev/adven/sockit/api/StreamCommand {
+	public fun <init> (Lkotlinx/serialization/json/JsonElement;)V
+	public fun getEventName ()Ljava/lang/String;
+	public fun getPayload ()Lkotlinx/serialization/json/JsonElement;
+}
+
+public final class dev/adven/sockit/api/Transports {
+	public static final field INSTANCE Ldev/adven/sockit/api/Transports;
+	public static final field POLLING Ljava/lang/String;
+	public static final field WEBSOCKET Ljava/lang/String;
+	public static final field WEBTRANSPORT Ljava/lang/String;
+}
+
+public final class dev/adven/sockit/api/Unsubscribe : dev/adven/sockit/api/StreamCommand {
+	public fun <init> (Lkotlinx/serialization/json/JsonElement;)V
+	public fun getEventName ()Ljava/lang/String;
+	public fun getPayload ()Lkotlinx/serialization/json/JsonElement;
+}
+

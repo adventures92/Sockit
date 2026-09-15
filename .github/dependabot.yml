@@ -1,0 +1,23 @@
+version: 2
+updates:
+  - package-ecosystem: gradle
+    directory: "/"
+    schedule:
+      interval: weekly
+    open-pull-requests-limit: 5
+    groups:
+      kotlin:
+        patterns: ["org.jetbrains.kotlin*", "org.jetbrains.kotlinx*"]
+      ktor:
+        patterns: ["io.ktor*"]
+
+  - package-ecosystem: github-actions
+    directory: "/"
+    schedule:
+      interval: weekly
+
+  # Node echo server used by the JVM integration suite.
+  - package-ecosystem: npm
+    directory: "/socketio/src/jvmTest/resources"
+    schedule:
+      interval: monthly
