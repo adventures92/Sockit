@@ -17,10 +17,12 @@ ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
 PROPS="$ROOT/gradle.properties"
 CHANGELOG="$ROOT/CHANGELOG.md"
 REPO_URL="https://github.com/adventures92/Sockit"
+COORDINATE="io.github.adventures92:sockit"
 
 info() { printf '\033[36m→\033[0m %s\n' "$1"; }
 ok()   { printf '\033[32m✓\033[0m %s\n' "$1"; }
 fail() { printf '\033[31m✗\033[0m %s\n' "$1" >&2; exit 1; }
+note() { printf '  \033[90m%s\033[0m\n' "$1"; }
 
 # ------------------------------------------------------------------ arguments
 
@@ -101,6 +103,43 @@ awk -v v="$NEXT" -v url="$REPO_URL" '
     { print }
 ' "$CHANGELOG" > "$CHANGELOG.tmp" && mv "$CHANGELOG.tmp" "$CHANGELOG"
 ok "link refs updated"
+
+# 4. Install snippets in user-facing markdown. Narrow and precise: only the exact Maven coordinate
+#    is rewritten, never surrounding prose. The root README advertised the previous version for a
+#    whole release cycle because nothing updated it and nothing checked it.
+#
+#    Scope must match scripts/check-docs.sh — docs/ keeps old versions deliberately (historical
+#    design records) and CHANGELOG.md lists every version by definition. Rather than duplicating
+#    that rule, check-docs.sh is run below to confirm nothing was missed.
+snippet_files="$(grep -rlE "$COORDINATE:[0-9]+\.[0-9]+\.[0-9]+" --include='*.md' "$ROOT" 2>/dev/null \
+                 | grep -vE "/(docs|build|guide-build|node_modules|\.git)/|/CHANGELOG\.md$" || true)"
+
+if [[ -n "$snippet_files" ]]; then
+    while IFS= read -r f; do
+        [[ -n "$f" ]] || continue
+        # Not `sed -i`: GNU and BSD disagree on whether it takes a suffix argument, and this runs
+        # on an Ubuntu runner as well as on a Mac. awk to a temp file behaves identically on both.
+        awk -v coord="$COORDINATE" -v v="$NEXT" \
+            '{ gsub(coord ":[0-9]+[.][0-9]+[.][0-9]+", coord ":" v); print }' \
+            "$f" > "$f.tmp" && mv "$f.tmp" "$f"
+        printf '    %s\n' "${f#"$ROOT"/}"
+    done <<< "$snippet_files"
+    ok "install snippets rewritten to $NEXT"
+else
+    note "no install snippets found to rewrite"
+fi
+
+# ------------------------------------------------------------------- verify
+
+# The checker is the authority on scope, so running it here means the rewrite above cannot
+# silently disagree with it — a missed file fails now rather than shipping a stale snippet.
+if [[ -x "$ROOT/scripts/check-docs.sh" ]]; then
+    if "$ROOT/scripts/check-docs.sh" >/dev/null 2>&1; then
+        ok "documentation checks pass against $NEXT"
+    else
+        fail "documentation checks failed after the rewrite — run ./scripts/check-docs.sh"
+    fi
+fi
 
 # ------------------------------------------------------------------- handover
 
