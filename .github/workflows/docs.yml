@@ -3,13 +3,20 @@ name: docs
 # Publishes the Dokka API reference to GitHub Pages on every release.
 # Requires Settings → Pages → Source: GitHub Actions (enabled).
 #
-# Triggered by the TAG, not by `release: [published]`. release.yml creates the GitHub Release with
-# the built-in GITHUB_TOKEN, and GitHub deliberately suppresses workflow triggers for events raised
-# by that token — its guard against recursive runs. So a `release` trigger here can never fire from
-# our own release; v0.0.1 published and this workflow never ran. The tag is the same signal and
-# needs no extra credential.
+# Normally invoked by tag-and-release.yml through workflow_call.
+#
+# GitHub suppresses workflow triggers for events raised by GITHUB_TOKEN — its guard against
+# recursive runs — and this workflow has now been caught by that twice:
+#
+#   `release: [published]`  never fired, because release.yml creates the Release with GITHUB_TOKEN.
+#   `push: tags`            never fired either, once tag-and-release.yml started pushing the tag
+#                           with the same token. Correct only for a hand-pushed tag.
+#
+# So the caller invokes it explicitly, exactly as it does release.yml. The `push: tags` trigger is
+# kept for a tag pushed by a human, where it does fire.
 
 on:
+  workflow_call:
   push:
     tags: ["v*"]
   workflow_dispatch:

@@ -76,3 +76,15 @@ jobs:
     with:
       version: ${{ needs.tag.outputs.version }}
     secrets: inherit
+
+  # Called for the same reason as release.yml: the tag this job created was pushed with
+  # GITHUB_TOKEN, so docs.yml's own `push: tags` trigger is suppressed and would never fire.
+  # Independent of `release` — a Pages hiccup must not mark a successful publish as failed.
+  docs:
+    needs: tag
+    if: needs.tag.outputs.tagged == 'true'
+    uses: ./.github/workflows/docs.yml
+    permissions:
+      contents: read
+      pages: write
+      id-token: write
