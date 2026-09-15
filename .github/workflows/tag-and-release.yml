@@ -1,0 +1,78 @@
+name: tag-and-release
+
+# Step 2 of 2. Fires when a release pull request lands on main.
+#
+# Detection is "VERSION_NAME changed in this push", not a label or a commit-message convention:
+# an ordinary change never touches it, and a release always does. Creating the tag is idempotent —
+# if v<version> already exists the job stops without publishing.
+#
+# release.yml is `uses:`-called rather than left to its own `push: tags` trigger, because a tag
+# pushed with GITHUB_TOKEN does NOT trigger workflows — GitHub's guard against recursive runs. The
+# tag alone would produce a release that never happens, silently. (Same trap that stopped docs.yml
+# firing on `release: [published]`.) The tag is still created, for provenance and so `git describe`
+# and the CHANGELOG links resolve.
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - "gradle.properties"   # VERSION_NAME lives here; nothing else triggers a release
+
+permissions:
+  contents: write
+
+jobs:
+  tag:
+    runs-on: ubuntu-latest
+    outputs:
+      version: ${{ steps.check.outputs.version }}
+      tagged: ${{ steps.check.outputs.tagged }}
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Decide whether this push is a release
+        id: check
+        run: |
+          VERSION="$(grep -E '^VERSION_NAME=' gradle.properties | head -1 | cut -d= -f2)"
+          echo "VERSION_NAME is now: $VERSION"
+
+          PREVIOUS="$(git show "${{ github.event.before }}:gradle.properties" 2>/dev/null \
+                      | grep -E '^VERSION_NAME=' | head -1 | cut -d= -f2 || true)"
+          echo "VERSION_NAME was:    ${PREVIOUS:-<unknown>}"
+
+          if [ "$VERSION" = "$PREVIOUS" ]; then
+            echo "::notice::VERSION_NAME unchanged — not a release"
+            echo "tagged=false" >> "$GITHUB_OUTPUT"; exit 0
+          fi
+          if git rev-parse -q --verify "refs/tags/v$VERSION" >/dev/null; then
+            echo "::notice::tag v$VERSION already exists — nothing to do"
+            echo "tagged=false" >> "$GITHUB_OUTPUT"; exit 0
+          fi
+          # Backstop: release.yml would refuse this anyway, but failing here is clearer than
+          # failing halfway through a release.
+          if ! grep -q "^## \[$VERSION\]" CHANGELOG.md; then
+            echo "::error::VERSION_NAME changed to $VERSION but CHANGELOG.md has no '## [$VERSION]' section"
+            exit 1
+          fi
+
+          echo "version=$VERSION" >> "$GITHUB_OUTPUT"
+          echo "tagged=true"      >> "$GITHUB_OUTPUT"
+
+      - name: Create the tag
+        if: steps.check.outputs.tagged == 'true'
+        run: |
+          VERSION="${{ steps.check.outputs.version }}"
+          git config user.name  "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git tag -a "v$VERSION" -m "Sockit $VERSION"
+          git push origin "v$VERSION"
+
+  release:
+    needs: tag
+    if: needs.tag.outputs.tagged == 'true'
+    uses: ./.github/workflows/release.yml
+    with:
+      version: ${{ needs.tag.outputs.version }}
+    secrets: inherit
