@@ -1,0 +1,12 @@
+/* Keep wide tables and code blocks from forcing the page to scroll sideways. */
+table { display: block; overflow-x: auto; max-width: 100%; }
+pre > code { overflow-x: auto; }
+
+/* The API-reference link in the sidebar footer. */
+.sockit-api-link {
+    display: block;
+    margin-top: 1rem;
+    padding-top: 1rem;
+    border-top: 1px solid var(--sidebar-non-existant, #444);
+    font-size: 0.9em;
+}

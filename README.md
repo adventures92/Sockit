@@ -9,7 +9,7 @@ in-house Engine.IO v4 / Socket.IO v5 implementation and no third-party protocol 
 dependencies.
 
 ```kotlin
-implementation("io.github.adventures92:sockit:0.0.1")
+implementation("io.github.adventures92:sockit:0.0.2")
 ```
 
 ```kotlin
@@ -29,7 +29,7 @@ socket.openAwait()
 socket.emit(Subscribe(buildJsonObject { put("pair", "BTC-INR") }))
 ```
 
-**📖 [Full documentation → `socketio/README.md`](./socketio/README.md)**
+**📖 [Documentation](https://adventures92.github.io/Sockit/)** · **[API reference](https://adventures92.github.io/Sockit/api/)**
 
 ## Why
 
