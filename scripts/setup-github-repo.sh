@@ -58,18 +58,32 @@ else
         || fail "Cannot see $REPO. Create it first, or set SOCKIT_REPO=<owner>/<name>."
 fi
 
-# A required check whose context names no real job is never reported, so the rule waits forever and
-# no pull request can ever merge. Validate before touching anything.
+# A required check whose context is never reported makes the rule wait forever, so no pull request
+# can ever merge. Two ways to get that wrong, both checked here:
+#
+#   1. the context names no job at all;
+#   2. the context names a MATRIX job by its bare key. GitHub reports one check run per cell, named
+#      "job (v1, v2)" — the bare name never appears. Requiring it blocks every PR permanently.
 if [[ -f "$CI_WORKFLOW" && -f "$BRANCH_RULESET" ]]; then
     count=0
     while IFS= read -r check; do
         [[ -n "$check" ]] || continue
-        grep -qE "^  ${check}:" "$CI_WORKFLOW" \
-            || fail "Required check '$check' is not a job in $(basename "$CI_WORKFLOW")"
+        # Strip any " (matrix, values)" suffix to recover the job key.
+        job="${check%% (*}"
+        grep -qE "^  ${job}:" "$CI_WORKFLOW" \
+            || fail "Required check '$check' names no job in $(basename "$CI_WORKFLOW")"
+
+        # Does that job declare a matrix?
+        if yq -e ".jobs.\"${job}\".strategy.matrix" "$CI_WORKFLOW" >/dev/null 2>&1; then
+            [[ "$check" == *"("* ]] || fail \
+"Required check '$check' is a MATRIX job — GitHub reports it as '$job (<values>)', never as
+     '$job' on its own, so requiring the bare name blocks every pull request forever.
+     List each cell explicitly in $(basename "$BRANCH_RULESET")."
+        fi
         count=$(( count + 1 ))
     done < <(jq -r '.rules[] | select(.type=="required_status_checks")
                     | .parameters.required_status_checks[].context' "$BRANCH_RULESET")
-    ok "All $count required checks exist as jobs in $(basename "$CI_WORKFLOW")"
+    ok "All $count required checks name reportable jobs in $(basename "$CI_WORKFLOW")"
 else
     warn "Workflow or branch ruleset missing — skipping check-name validation"
 fi
