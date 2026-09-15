@@ -43,7 +43,7 @@ jobs:
         id: name
         run: echo "value=sockit-demo-debug-$(git rev-parse --short HEAD)" >> "$GITHUB_OUTPUT"
 
-      - uses: actions/upload-artifact@v4
+      - uses: actions/upload-artifact@v7
         with:
           name: ${{ steps.name.outputs.value }}
           path: androidApp/build/outputs/apk/debug/*.apk
