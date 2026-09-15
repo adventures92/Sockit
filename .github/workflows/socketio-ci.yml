@@ -76,7 +76,12 @@ jobs:
 
       - name: Forbidden deps scan
         run: |
-          ! grep -rEn "hildan|kmp-xlog|socket\.io-client" socketio/src socketio/*.kts socketio/*.pro
+          # Scoped to Kotlin/Gradle sources. An unscoped scan also walks
+          # socketio/src/jvmTest/resources/node_modules, which the "Start echo server" step
+          # populates with the real socket.io npm package minutes earlier — its bundled
+          # client-dist files mention socket.io-client and fail this gate on a clean tree.
+          ! grep -rEn --include="*.kt" --include="*.kts" --include="*.pro" --include="*.toml" \
+              "hildan|kmp-xlog|socket\.io-client" socketio/ gradle/ build.gradle.kts
 
   # socket.io server npm version matrix — smoke tests only (CH3 G-P3-4).
   server-compatibility:
