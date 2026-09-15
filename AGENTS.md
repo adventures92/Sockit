@@ -237,6 +237,14 @@ Every other action tracks its latest major. GitHub deprecated the Node 20 runtim
 ([changelog](https://github.blog/changelog/2025-09-19-deprecation-of-node-20-on-github-actions-runners/)),
 so actions targeting it are force-run on Node 24 and warn on every job.
 
+The matrix installs each server version with `npm install socket.io@X --no-save`, which re-resolves
+any subtree the lockfile does not already satisfy. Every `engine.io` release declares
+`@types/node: >=10.0.0`, so that re-resolution floats to whatever `latest` is at that moment —
+which made the matrix depend on the state of an unrelated package. A broken `@types/node` publish
+on 2026-09-15 (metadata present, tarball 404) failed every cell below 4.8.1 during `npm install`.
+`socketio/src/jvmTest/resources/package.json` therefore pins it through `overrides`. It is
+types-only and never loaded by the echo server, so the pin cannot affect what the matrix proves.
+
 The two scan steps use `grep -rEn`, not `rg` — ripgrep is not guaranteed on GitHub runners, and a
 missing binary would make both scans pass vacuously.
 

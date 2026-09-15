@@ -122,6 +122,13 @@ jobs:
         with:
           node-version: 24
 
+      # `--no-save` re-resolves the subtree for any cell the lockfile does not already satisfy, so
+      # the older cells resolve engine.io fresh — and every engine.io declares `@types/node:
+      # >=10.0.0`, which floats to whatever `latest` is at that moment. On 2026-09-15 `latest` was
+      # a broken publish (26.6.0: metadata present, tarball 404) and every cell below 4.8.1 failed
+      # on `npm install`, nowhere near our code. package.json pins @types/node through `overrides`
+      # so the matrix resolves the same tree on every run. It is a types-only package the echo
+      # server never loads, so the pinned version has no bearing on what is tested.
       - name: Install socket.io@${{ matrix.socket-io-version }} and start echo server
         env:
           SOCKET_IO_RECOVERY: ${{ matrix.recovery }}

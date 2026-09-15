@@ -2,5 +2,8 @@
   "private": true,
   "dependencies": {
     "socket.io": "^4.8.1"
+  },
+  "overrides": {
+    "@types/node": "25.9.3"
   }
 }
