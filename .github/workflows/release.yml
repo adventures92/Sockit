@@ -26,6 +26,13 @@ on:
         description: "Run the gate and build artifacts, but do not publish"
         type: boolean
         default: false
+  # Called by tag-and-release.yml after it tags a merged release pull request. It cannot rely on
+  # the `push: tags` trigger above: a tag pushed with GITHUB_TOKEN does not trigger workflows.
+  workflow_call:
+    inputs:
+      version:
+        type: string
+        required: true
 
 concurrency:
   group: release-${{ github.ref }}
@@ -47,9 +54,11 @@ jobs:
       - name: Resolve version
         id: version
         run: |
-          if [ "${{ github.event_name }}" = "workflow_dispatch" ]; then
-            VERSION="${{ github.event.inputs.version }}"
-          else
+          # `inputs.version` is set for both workflow_dispatch and workflow_call, and empty for a
+          # tag push. Branching on github.event_name would be wrong for workflow_call: that reports
+          # the ORIGINAL event (push to main), so GITHUB_REF_NAME would be "main", not a version.
+          VERSION="${{ inputs.version }}"
+          if [ -z "$VERSION" ]; then
             VERSION="${GITHUB_REF_NAME#v}"
           fi
           if ! printf '%s' "$VERSION" | grep -Eq '^[0-9]+\.[0-9]+\.[0-9]+(-[0-9A-Za-z.-]+)?$'; then
