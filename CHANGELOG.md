@@ -7,6 +7,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Fixed
+
+- The demo APK attached to a release now reports the library version it was built from.
+  `sockit-demo-0.0.1-debug.apk` identified itself as `1.0` internally, because `versionCode`
+  and `versionName` were hardcoded in the demo app rather than derived from the published
+  version. The library artifacts themselves were unaffected.
+
 ## [0.0.1] - 2026-09-15
 
 Initial public release.
