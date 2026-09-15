@@ -70,6 +70,9 @@ jobs:
           path: socketio/build/dokka/html
           if-no-files-found: error
 
+      - name: Documentation checks
+        run: ./scripts/check-docs.sh
+
       - name: Encapsulation scan
         run: |
           ! grep -rEn 'dev\.adven\.sockit\.(internal|protocol|transport|engineio|socketio|connection|platform)' shared/src

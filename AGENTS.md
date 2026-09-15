@@ -353,6 +353,7 @@ distribute). See [`.agents/README.md`](.agents/README.md).
 
 | Skill | Purpose |
 |-------|---------|
+| [`changing-the-library`](.agents/skills/changing-the-library/SKILL.md) | What travels with a code change — API dumps, KDoc, guide pages, changelog, conformance vectors |
 | [`release`](.agents/skills/release/SKILL.md) | Cut a release — pre-flight, tag, and verify the artifact landed on Maven Central |
 
 Skills are an **authoring aid, never a pipeline dependency**. No workflow may require an agent to
@@ -368,6 +369,13 @@ Two artefacts, published together to GitHub Pages by `docs.yml` on every release
 |---|---|---|---|
 | Guide | `guide/` (mdBook, `book.toml`) | `/` | Narrative — teaches how to use the library |
 | API reference | Dokka from `api/` KDoc | `/api/` | Generated — exhaustive, cannot drift |
+
+**`scripts/check-docs.sh` guards it.** The guide is prose and the compiler does not read it, so CI
+checks that every SUMMARY entry exists, every internal link and `#anchor` resolves, install
+snippets quote the current `VERSION_NAME`, and every API type the guide names still exists in the
+committed API dump. A renamed or removed public type fails the build rather than leaving prose that
+is confidently wrong. It cannot catch a paragraph describing behaviour you changed — see the
+[`changing-the-library`](.agents/skills/changing-the-library/SKILL.md) skill.
 
 `guide/SUMMARY.md` is the table of contents; a page not listed there is not built. Build locally
 with `mdbook build` (output `guide-build/`, gitignored).
