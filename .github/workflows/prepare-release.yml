@@ -55,7 +55,18 @@ jobs:
           git config user.name  "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
           git switch -c "$BRANCH"
-          git add gradle.properties CHANGELOG.md
+
+          # `git add -A`, not a list of paths. prepare-release.sh rewrites the install snippets in
+          # README.md, socketio/README.md and guide/ as well as the version and the changelog, and
+          # an explicit list silently drops whatever it does not name — which it did: those four
+          # files were rewritten and then discarded, so the release branch still advertised the
+          # previous version. That is the exact failure the snippet rewriting was added to prevent.
+          # check-docs.sh catches it, so nothing stale ships — instead every release pull request
+          # failed its own CI until someone fixed it by hand.
+          #
+          # The script writes nothing outside the repository and makes no network calls, so there
+          # is nothing -A could pick up that should not be committed.
+          git add -A
           git commit -m "Release $VERSION
 
           Bump VERSION_NAME $CURRENT -> $VERSION and promote the CHANGELOG's
