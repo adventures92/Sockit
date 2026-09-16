@@ -45,10 +45,23 @@ jobs:
 
       # The narrative guide is the site root; the generated reference is nested under /api/.
       # Neither replaces the other — the guide teaches, the reference is exhaustive.
+      # Installed directly rather than via peaceiris/actions-mdbook. That action's released @v2 tag
+      # still declares `using: node20`; the fix exists on its main branch but it has not cut a
+      # release since April 2024, so there is no tag to move to. mdBook is a single static binary,
+      # so the action was only ever saving a curl.
+      #
+      # This also removes third-party JavaScript from a job holding `pages: write` and
+      # `id-token: write`, and pins an exact mdBook version — the action was used with
+      # `mdbook-version: latest`, so an upstream release could change the published docs with no
+      # change here.
       - name: Install mdBook
-        uses: peaceiris/actions-mdbook@v2
-        with:
-          mdbook-version: latest
+        env:
+          MDBOOK_VERSION: "0.5.4"
+        run: |
+          curl -fsSL --retry 3 \
+            "https://github.com/rust-lang/mdBook/releases/download/v${MDBOOK_VERSION}/mdbook-v${MDBOOK_VERSION}-x86_64-unknown-linux-gnu.tar.gz" \
+            | tar -xz -C /usr/local/bin mdbook
+          mdbook --version
 
       - name: Build the guide
         run: mdbook build
