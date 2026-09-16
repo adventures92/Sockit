@@ -44,6 +44,12 @@ does not implement the client half of that yet, so assume you need to re-subscri
 | `reconnectionAttempts` exhausted | Retries stop. Call `open()` to start again |
 | Intentional shutdown | `close()` sends a force-close. No reconnect is scheduled |
 
+A drop the library is going to retry is **never** published as `Failed`. A ping timeout with
+`reconnection = true` goes to `Reconnecting`, and the `PingTimeout` stays on the `errors` flow
+where it belongs. `Failed(PingTimeout)` means the drop ended the attempt — reconnection is off, or
+the retry budget is spent — so reacting to `Failed` by prompting the user is safe, and will not
+fire under a retry that is about to succeed on its own.
+
 ## Tuning
 
 ```kotlin

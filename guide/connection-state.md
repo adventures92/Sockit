@@ -62,3 +62,8 @@ socket.connectionState.collect { state ->
 
 To recover, build a new `SocketOptions` — with a fresh token if that was the cause — and connect
 again. See [Errors](errors.md) for what each `SocketError` means.
+
+`Disconnected` and `Failed` both mean "not connected", and which one you get says why. A close you
+asked for is `Disconnected`; a close an error caused, that nothing will retry, is `Failed` carrying
+that error. So a consumer can tell a deliberate shutdown from a dropped connection without watching
+the `errors` flow alongside the state.

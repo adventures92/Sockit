@@ -210,7 +210,7 @@ internal class NamespaceSocketImpl(
     }
 
     /** Caller must already be on [workQueue]. */
-    internal fun onEngineClose(reconnecting: Boolean, attempt: Int) {
+    internal fun onEngineClose(reconnecting: Boolean, attempt: Int, cause: SocketError? = null) {
         if (!active) {
             if (!connected) {
                 updateState(ConnectionState.Disconnected)
@@ -223,7 +223,10 @@ internal class NamespaceSocketImpl(
         if (reconnecting && options.reconnection) {
             updateState(ConnectionState.Reconnecting(attempt))
         } else {
-            updateState(ConnectionState.Disconnected)
+            // A close nothing will retry is Failed when an error caused it, and Disconnected only
+            // when it was asked for. Collapsing both to Disconnected threw the cause away, leaving
+            // a consumer unable to tell a deliberate close from a dropped connection.
+            updateState(cause?.let { ConnectionState.Failed(it) } ?: ConnectionState.Disconnected)
         }
     }
 

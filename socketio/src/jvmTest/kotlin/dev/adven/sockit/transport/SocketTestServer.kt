@@ -66,6 +66,7 @@ internal object SocketTestServer {
         pingIntervalMs: Int = 25_000,
         pingTimeoutMs: Int = 20_000,
         respondToPings: Boolean = true,
+        sendServerPings: Boolean = false,
     ) {
         synchronized(lock) {
             if (refCount > 0) {
@@ -78,6 +79,7 @@ internal object SocketTestServer {
                 pingIntervalMs = pingIntervalMs,
                 pingTimeoutMs = pingTimeoutMs,
                 respondToPings = respondToPings,
+                sendServerPings = sendServerPings,
             )
             startServerLocked(forceEmbedded = true)
             awaitReadyLocked()

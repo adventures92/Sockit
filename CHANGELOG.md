@@ -7,6 +7,18 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Fixed
+
+- `ConnectionState.Failed` is no longer published for a drop the library is about to retry. A ping
+  timeout with `reconnection = true` emitted `Failed(PingTimeout)` immediately before
+  `Reconnecting`, so a consumer following the documented pattern — treating `Failed` as terminal
+  and prompting the user — reacted to a transient drop that recovered on its own moments later.
+  The error continues to surface on the `errors` flow, where a retried drop belongs.
+- A connection dropped by a ping timeout or TLS failure with no retry pending now settles on
+  `Failed(error)` instead of a bare `Disconnected`. The error was previously overwritten by the
+  engine close that followed it, leaving no way to distinguish a deliberate `close()` from a
+  connection that died — the two produced identical state.
+
 ## [0.0.2] - 2026-09-15
 
 ### Fixed

@@ -39,6 +39,17 @@ internal class ConnectionManager(
     private var engineBound = false
     private var engineOpen = false
     private var reconnectAttempt = 0
+
+    /**
+     * The error that dropped the engine, held until the close it causes has been processed.
+     *
+     * An engine error arrives *before* the close it triggers, so the state it implies cannot be
+     * published at error time: the close that follows recomputes the aggregate and would overwrite
+     * it. Recording it here lets [onEngineClose] hand it to the namespaces, which is where
+     * [ConnectionState.Failed] belongs — [updateAggregateState] already derives the client-level
+     * state from them. Mutated only on the worker, like every other field here.
+     */
+    private var terminalError: SocketError? = null
     private var clientRefCount = 0
 
     private val _connectionState = MutableStateFlow<ConnectionState>(ConnectionState.Disconnected)
@@ -223,15 +234,26 @@ internal class ConnectionManager(
         } else {
             reconnectAttempt = 0
         }
-        namespaces.values.forEach { it.onEngineClose(reconnecting, reconnectAttempt) }
+        // Only a close that ends the attempt is Failed. While reconnecting the namespaces go to
+        // Reconnecting and the error stays on the errors flow, so a retry the library is already
+        // performing never looks terminal. Consumed either way: a later clean close must not
+        // resurrect an error from a connection that has since been retried.
+        val cause = terminalError.takeUnless { reconnecting }
+        terminalError = null
+        namespaces.values.forEach { it.onEngineClose(reconnecting, reconnectAttempt, cause) }
         updateAggregateState()
     }
 
     private fun onEngineError(error: SocketError) {
         parentScope.launch { _errors.emit(error) }
         namespaces.values.forEach { it.onEngineError(error) }
+        // Record, do not publish. Writing Failed here set the client state directly, bypassing
+        // updateAggregateState — and the close that always follows then recomputed the aggregate
+        // and overwrote it. With reconnection on that surfaced as a Failed flash immediately
+        // before Reconnecting, which reads as terminal to a consumer following the documented
+        // pattern; with reconnection off the error was replaced by a bare Disconnected and lost.
         if (error is SocketError.PingTimeout || error is SocketError.TlsFailure) {
-            _connectionState.value = ConnectionState.Failed(error)
+            terminalError = error
         }
     }
 
