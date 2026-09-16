@@ -24,14 +24,17 @@ jobs:
       # acceptance of Gradle's commercial Terms of Use. See .github/dependabot.yml.
       - uses: gradle/actions/setup-gradle@v5
 
-      # Held at 20, deliberately. Node 20 passed end of life in April 2026 and should move — but
-      # bumping this to 24 produced intermittent jvmTest failures on the ubuntu runner: two
-      # different tests (ConnectionIntegrationTest.connectErrorExposesStructuredMessageAndData,
-      # a timeout; ClientCloseAwaitTest.closeAwaitCompletesBeforeFurtherConnectionStateEmissions,
-      # a close-ordering assertion) failing in 2 of 4 runs, against 6 of 6 green on Node 20. Both
-      # probe connection-close semantics, which is exactly where a Node behavioural change would
-      # surface. This is the version the bundled echo server runs on, not an action runtime, so it
-      # carries no deprecation warning. Raise it only with repeated green runs as evidence.
+      # This is the Node the bundled echo server runs on, not an action runtime, so it carries no
+      # deprecation warning — a bump here is a maintenance decision, not a warning fix, and does
+      # not belong in a pull request about action runtimes.
+      #
+      # Node 20 passed end of life in April 2026 and should move; that move needs its own pull
+      # request. An earlier attempt was reverted on the theory that Node 24 caused intermittent
+      # jvmTest failures. That theory did not survive: ClientCloseAwaitTest, one of the two tests
+      # cited, then failed on Node 20 on main, and its cause turned out to be a race in the test
+      # itself. The other, ConnectionIntegrationTest.connectErrorExposesStructuredMessageAndData,
+      # has been seen failing only on Node 24 — once — and is NOT explained. Do not read this as
+      # proof that Node 24 is safe; read it as the correlation being too weak to conclude from.
       - name: Setup Node (echo server for jvmTest)
         uses: actions/setup-node@v7
         with:

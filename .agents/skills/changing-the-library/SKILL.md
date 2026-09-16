@@ -90,10 +90,24 @@ the guide names a type that no longer exists, quotes a stale version, or has a b
   April 2024, so there was no tag to move to. When an action is a thin wrapper around installing one
   static binary, install the binary instead — that is what `docs.yml` does for mdBook, and it pins
   the version besides. `node-version:` on `setup-node` is a **separate axis** and carries no
-  deprecation warning at all: that is the Node the bundled echo server runs on. Do not bump it
-  alongside an action-runtime fix — moving it 20 → 24 produced intermittent `jvmTest` failures in
-  two different connection-close tests, and one green run is not evidence that it is safe. It is
-  currently held at 20 with the detail recorded in `socketio-ci.yml`.
+  deprecation warning at all: that is the Node the bundled echo server runs on, so bumping it is a
+  maintenance decision, not a warning fix, and belongs in its own pull request.
+
+### A flaky test is a bug in the test until proven otherwise
+
+When CI goes red on a timing-sensitive test, resist the urge to blame the thing you just changed.
+A Node bump was reverted here on the theory that it caused intermittent `jvmTest` failures —
+2 of 4 runs red on Node 24 against 6 of 6 green on Node 20. The theory did not survive: one of
+those tests then failed on Node 20 on `main`, and its cause was a race in the test. Four runs is
+not a sample. (The second test has been seen failing only once, on Node 24, and is still
+unexplained — "my theory was wrong" is not the same as "the other direction is proven".)
+
+What the failure actually was, and the shape to look for: `ClientCloseAwaitTest` snapshotted a
+counter that a **collector coroutine** mutated, immediately after `closeAwait()`. `closeAwait`
+guarantees the *worker* finished; it cannot guarantee a collector has been resumed to observe the
+resulting state. Both resumptions land on the same event loop in an undefined order. Assert on what
+was **observed** — wait for the terminal state to appear, then assert nothing follows — rather than
+on a count sampled at an arbitrary instant.
 
 ## The guide is prose, and prose rots
 
