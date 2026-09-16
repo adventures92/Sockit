@@ -24,10 +24,18 @@ jobs:
       # acceptance of Gradle's commercial Terms of Use. See .github/dependabot.yml.
       - uses: gradle/actions/setup-gradle@v5
 
+      # Held at 20, deliberately. Node 20 passed end of life in April 2026 and should move — but
+      # bumping this to 24 produced intermittent jvmTest failures on the ubuntu runner: two
+      # different tests (ConnectionIntegrationTest.connectErrorExposesStructuredMessageAndData,
+      # a timeout; ClientCloseAwaitTest.closeAwaitCompletesBeforeFurtherConnectionStateEmissions,
+      # a close-ordering assertion) failing in 2 of 4 runs, against 6 of 6 green on Node 20. Both
+      # probe connection-close semantics, which is exactly where a Node behavioural change would
+      # surface. This is the version the bundled echo server runs on, not an action runtime, so it
+      # carries no deprecation warning. Raise it only with repeated green runs as evidence.
       - name: Setup Node (echo server for jvmTest)
         uses: actions/setup-node@v7
         with:
-          node-version: 24
+          node-version: 20
 
       - name: Start echo server
         run: |
@@ -120,7 +128,7 @@ jobs:
       - name: Setup Node
         uses: actions/setup-node@v7
         with:
-          node-version: 24
+          node-version: 20
 
       # `--no-save` re-resolves the subtree for any cell the lockfile does not already satisfy, so
       # the older cells resolve engine.io fresh — and every engine.io declares `@types/node:
@@ -185,7 +193,7 @@ jobs:
       - name: Setup Node (echo server for platform smoke)
         uses: actions/setup-node@v7
         with:
-          node-version: 24
+          node-version: 20
 
       - name: Start echo server
         run: |
@@ -217,7 +225,7 @@ jobs:
       - name: Setup Node
         uses: actions/setup-node@v7
         with:
-          node-version: 24
+          node-version: 20
 
       - name: Start echo server
         run: |

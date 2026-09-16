@@ -89,8 +89,11 @@ the guide names a type that no longer exists, quotes a stale version, or has a b
   its default branch: `peaceiris/actions-mdbook` fixed this on `main` but has cut no release since
   April 2024, so there was no tag to move to. When an action is a thin wrapper around installing one
   static binary, install the binary instead — that is what `docs.yml` does for mdBook, and it pins
-  the version besides. `node-version:` on `setup-node` is a separate axis: that is the Node *our*
-  test server runs on, and it needs to stay on a supported LTS.
+  the version besides. `node-version:` on `setup-node` is a **separate axis** and carries no
+  deprecation warning at all: that is the Node the bundled echo server runs on. Do not bump it
+  alongside an action-runtime fix — moving it 20 → 24 produced intermittent `jvmTest` failures in
+  two different connection-close tests, and one green run is not evidence that it is safe. It is
+  currently held at 20 with the detail recorded in `socketio-ci.yml`.
 
 ## The guide is prose, and prose rots
 
