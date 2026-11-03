@@ -507,7 +507,19 @@ internal class EngineConnection(
         }
 
         probeSubscriptions += probe.events.once(Transport.EVENT_OPEN, onProbeOpen)
-        probeSubscriptions += probe.events.once(Transport.EVENT_PACKET, onProbePacket)
+        // Keep receiving after the probe pong: the server can flush data as soon as it sees
+        // Upgrade, before our upgrade write drains and setTransport installs the normal listeners.
+        probeSubscriptions += probe.events.on(Transport.EVENT_PACKET, onProbePacket)
+        probeSubscriptions += probe.events.on(
+            Transport.EVENT_BINARY,
+            EventBus.Listener { args ->
+                val data = args.firstOrNull() as? ByteString ?: return@Listener
+                workQueue.launch {
+                    if (probeFailed || inactive() || upgradeController.phase == UpgradePhase.PROBING) return@launch
+                    events.emit(EVENT_BINARY_DATA, data)
+                }
+            },
+        )
         probeSubscriptions += probe.events.on(
             Transport.EVENT_DRAIN,
             EventBus.Listener { args ->
@@ -526,6 +538,10 @@ internal class EngineConnection(
     private fun handleProbePacket(name: String, probe: Transport, packet: EnginePacket) {
         workQueue.launch {
             if (probeFailed || inactive()) return@launch
+            if (upgradeController.phase != UpgradePhase.PROBING) {
+                onPacket(packet)
+                return@launch
+            }
             if (packet is EnginePacket.Pong && packet.payload == PROBE) {
                 log.devVerbose(TAG) { "probe transport $name pong" }
                 upgradeController.onProbePong()

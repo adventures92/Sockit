@@ -170,6 +170,9 @@ detekt {
 
 tasks.named<Test>("jvmTest") {
     timeout.set(Duration.ofMinutes(5))
+    testLogging {
+        exceptionFormat = org.gradle.api.tasks.testing.logging.TestExceptionFormat.FULL
+    }
 }
 
 tasks.withType<KotlinCompilationTask<*>>().configureEach {

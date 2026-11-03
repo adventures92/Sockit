@@ -6,8 +6,10 @@ import dev.adven.sockit.api.Transports
 import dev.adven.sockit.api.socketOptions
 import dev.adven.sockit.socketio.SocketClientRegistry
 import dev.adven.sockit.transport.SocketTestServer
+import kotlinx.coroutines.CoroutineStart
 import kotlinx.coroutines.TimeoutCancellationException
 import kotlinx.coroutines.delay
+import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.withTimeout
@@ -48,10 +50,15 @@ class ClientCloseAwaitTest {
         )
         val socket = client.namespace()
         socket.openAwait()
+        // Namespace and aggregate state are separate flows. Observe the client state this test
+        // closes rather than assuming its update has happened when the namespace await resumes.
+        withTimeout(5.seconds) {
+            client.connectionState.first { it == ConnectionState.Connected }
+        }
         assertTrue(client.isConnected())
 
         val seen = mutableListOf<ConnectionState>()
-        val collector = launch {
+        val collector = launch(start = CoroutineStart.UNDISPATCHED) {
             client.connectionState.collect { seen += it }
         }
 

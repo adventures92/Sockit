@@ -101,6 +101,15 @@ class ProtocolConformanceTest {
     }
 
     @Test
+    fun receiveAckForCustomNamespace() {
+        // Socket.IO protocol specification: 3/admin,13["bar"], wrapped in Engine.IO message 4.
+        assertEquals(
+            SocketPacket.Ack("/admin", 13, """["bar"]"""),
+            engineDecodeSocket("""43/admin,13["bar"]"""),
+        )
+    }
+
+    @Test
     fun sendPacketWithBinaryAttachments() {
         val (wire, frames) = BinaryAssembler.encodeBinaryEvent(
             namespace = "/",
