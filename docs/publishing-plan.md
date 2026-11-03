@@ -36,7 +36,7 @@ the echo server rewritten from scratch; no upstream bytes remain and no MIT noti
 
 | # | Decision | Why it matters | Recommendation |
 |---|----------|----------------|----------------|
-| **D1** | **Maven Central namespace** | Central verifies namespace ownership. `com.adven.*` requires proving you own `adven.com`. The zero-friction option is `io.github.<user-or-org>`, verified via a GitHub repo. | If you don't own a domain: **`io.github.zebpay-anand`** (or the org you publish under). If you own `adven.com`: `com.dev.adven.sockit`. |
+| **D1** | **Maven Central namespace** | Central verifies namespace ownership. `com.adven.*` requires proving you own `adven.com`. The zero-friction option is `io.github.<user-or-org>`, verified via a GitHub repo. | If you don't own a domain: **`io.github.adventures92`** (or the org you publish under). If you own `adven.com`: `com.dev.adven.sockit`. |
 | **D2** | **artifactId + final group** | Becomes the coordinate `group:socketio:version`. | `…:socketio:0.1.0` |
 | **D3** | **Publishing plugin** | Raw `maven-publish` for KMP + Central Portal is a lot of boilerplate. | **vanniktech `com.vanniktech.maven.publish`** — de-facto standard for KMP→Central; auto-configures all target publications, sources jars, Dokka javadoc jar, signing, and the Central Portal upload. |
 | **D4** | **License** | Central requires a license in the POM; open-source needs a LICENSE file. | **Apache-2.0** (common for KMP libs) — confirm or pick MIT. |

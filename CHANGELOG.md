@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Fixed
+
+- Use the personal GitHub namespace in the historical publishing plan.
+
 ## [0.0.2] - 2026-09-15
 
 ### Fixed
