@@ -21,17 +21,18 @@ import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.cancel
 import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.withTimeout
+import kotlinx.io.bytestring.ByteString
 import kotlin.test.AfterTest
 import kotlin.test.BeforeTest
 import kotlin.test.Test
+import kotlin.test.assertEquals
 import kotlin.test.assertFalse
 import kotlin.test.assertTrue
 import kotlin.time.Duration.Companion.seconds
 
 /**
- * Deterministic, network-free regression for the WebSocket upgrade-probe CONNECT-strand bug:
- * a packet queued while the engine is probing an upgrade must still reach the polling transport,
- * both while the probe is pending and after it fails — never stranded until the next heartbeat.
+ * Network-free upgrade regressions: queued packets must still flush while probing or after a
+ * failed probe, and inbound replies must remain deliverable before the upgrade write drains.
  */
 class UpgradeProbeFlushTest {
     private lateinit var scope: CoroutineScope
@@ -127,6 +128,69 @@ class UpgradeProbeFlushTest {
         engine.close()
     }
 
+    /** The server can respond as soon as it receives Upgrade, before our write drains. */
+    @Test
+    fun ackReceivedBeforeUpgradeDrainIsDelivered() = runBlocking {
+        val ack = SocketPacket.Ack("/admin", 13, """["bar"]""")
+        val factory = FakeTransportFactory(
+            probeBehavior = {
+                ready()
+                deliver(EnginePacket.Pong("probe"))
+            },
+            probeSendBehavior = { messages ->
+                if (messages.any { it.packet is EnginePacket.Upgrade }) {
+                    deliver(EnginePacket.Message(ack))
+                }
+            },
+        )
+        val engine = engineWith(factory)
+        val received = CompletableDeferred<SocketPacket>()
+        engine.events.once(
+            EngineConnection.EVENT_DATA,
+            EventBus.Listener { args -> received.complete(args.first() as SocketPacket) },
+        )
+        engine.open()
+
+        try {
+            withTimeout(2.seconds) { factory.pollingPaused.await() }
+            factory.polling.completePause()
+            assertEquals(ack, withTimeout(2.seconds) { received.await() })
+        } finally {
+            engine.close()
+        }
+    }
+
+    @Test
+    fun binaryAttachmentReceivedBeforeUpgradeDrainIsDelivered() = runBlocking {
+        val attachment = ByteString(byteArrayOf(1, 2, 3))
+        val factory = FakeTransportFactory(
+            probeBehavior = {
+                ready()
+                deliver(EnginePacket.Pong("probe"))
+            },
+            probeSendBehavior = { messages ->
+                if (messages.any { it.packet is EnginePacket.Upgrade }) {
+                    deliverBinary(attachment)
+                }
+            },
+        )
+        val engine = engineWith(factory)
+        val received = CompletableDeferred<ByteString>()
+        engine.events.once(
+            EngineConnection.EVENT_BINARY_DATA,
+            EventBus.Listener { args -> received.complete(args.first() as ByteString) },
+        )
+        engine.open()
+
+        try {
+            withTimeout(2.seconds) { factory.pollingPaused.await() }
+            factory.polling.completePause()
+            assertEquals(attachment, withTimeout(2.seconds) { received.await() })
+        } finally {
+            engine.close()
+        }
+    }
+
     private fun engineWith(factory: FakeTransportFactory): EngineConnection = EngineConnection(
         url = "http://localhost:12345",
         options = socketOptions {
@@ -152,10 +216,13 @@ private class FakeTransport(
     name: String,
     isProbe: Boolean,
     private val openBehavior: FakeTransport.() -> Unit,
+    private val sendBehavior: FakeTransport.(List<OutboundEngineMessage>) -> Unit = {},
+    private val onPausing: () -> Unit = {},
 ) : Transport(options, httpClient, log, scope, ioScope, name, isProbe) {
 
     val firstNonPingSend = CompletableDeferred<OutboundEngineMessage>()
     val resumed = CompletableDeferred<Unit>()
+    private var pauseCallback: (() -> Unit)? = null
 
     override fun doOpen() {
         openBehavior()
@@ -168,15 +235,22 @@ private class FakeTransport(
                 firstNonPingSend.complete(message)
             }
         }
+        sendBehavior(messages)
         events.emit(EVENT_DRAIN, drainCount(messages))
     }
 
     override fun doClose(fromOpenState: Boolean) = Unit
 
-    // Pending pause: mark PAUSED but hold the callback, so an upgrade stalls at PAUSING_POLL
-    // (the callback that would send the Upgrade packet is intentionally never invoked).
+    // Hold the upgrade at PAUSING_POLL until the test explicitly completes the pause.
     override fun pause(onPause: () -> Unit) {
         state = TransportState.PAUSED
+        pauseCallback = onPause
+        onPausing()
+    }
+
+    fun completePause() {
+        checkNotNull(pauseCallback).invoke()
+        pauseCallback = null
     }
 
     override fun resume() {
@@ -194,6 +268,8 @@ private class FakeTransport(
 
     /** Deliver an inbound engine packet upstream (e.g. the probe pong). */
     fun deliver(packet: EnginePacket) = onPacket(packet)
+
+    fun deliverBinary(data: ByteString) = events.emit(EVENT_BINARY, data)
 
     /** Simulate the probe socket closing (Ktor CIO "Job was cancelled" under CI load). */
     fun failClosed() = onClose()
@@ -215,7 +291,9 @@ private class FakeTransport(
  *  websocket probe transport whose open behaviour is supplied per test. */
 private class FakeTransportFactory(
     private val probeBehavior: FakeTransport.() -> Unit,
+    private val probeSendBehavior: FakeTransport.(List<OutboundEngineMessage>) -> Unit = {},
 ) : TransportFactory {
+    val pollingPaused = CompletableDeferred<Unit>()
     lateinit var polling: FakeTransport
     var probe: FakeTransport? = null
 
@@ -246,6 +324,7 @@ private class FakeTransportFactory(
                     ),
                 )
             },
+            onPausing = { pollingPaused.complete(Unit) },
         ).also { polling = it }
 
         WebSocketTransport.NAME -> FakeTransport(
@@ -257,6 +336,7 @@ private class FakeTransportFactory(
             name,
             isProbe = true,
             openBehavior = probeBehavior,
+            sendBehavior = probeSendBehavior,
         ).also { probe = it }
 
         else -> throw IllegalArgumentException("unexpected transport: $name")

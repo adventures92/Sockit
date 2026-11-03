@@ -22,6 +22,9 @@ socketOptions { ackTimeoutMs = 5_000 }
 On expiry the flow fails with `SocketError.Timeout`. The timer is cancelled when the ack arrives,
 so a fast reply cannot produce a late spurious timeout.
 
+Replies remain deliverable during a polling-to-WebSocket upgrade, including replies with binary
+attachments. You do not need to delay `emitWithAck` until the upgrade completes.
+
 ## Replying when the server asks
 
 A server emitting with a callback produces an event whose `ack` is non-null:

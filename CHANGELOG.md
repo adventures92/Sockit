@@ -9,6 +9,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Fixed
 
+- Preserve acknowledgements and binary frames received during the polling-to-WebSocket upgrade.
 - Use the personal GitHub namespace in the historical publishing plan.
 
 ## [0.0.2] - 2026-09-15
